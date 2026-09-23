@@ -1,0 +1,22 @@
+[data-theme="contraste"] {
+  --paper: #000000; --ink: #FFFFFF;
+  --bg: var(--paper); --fg: var(--ink); --dim: #B9B9B9; --accent: #FFD400;
+  --up: #3DFFB0; --down: #FF6B5A; --line: #737373;
+  --surface: var(--bg); --surface-alt: var(--bg);
+  --font-display: 'Archivo', sans-serif; --font-body: 'Archivo', sans-serif;
+  --radius: 0; --gap: 2.2cqw; --pad: 3.4cqw;
+  --size-clock: 16cqw; --size-big: 16cqw; --size-val: 4.4cqw; --size-sub: 1.7cqw; --size-lab: 1.1cqw;
+}
+[data-theme="contraste"] .vitral-grid {
+  grid-template-rows: 1.25fr 1fr 1.1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas: "clock clock clock next" "work work home count" "btc fx weather chain";
+}
+[data-theme="contraste"] .w { border-radius: 0; padding: 1.2cqw 0 0 1.2cqw; }
+[data-theme="contraste"] .w::before { content: ""; position: absolute; top: 0; left: 0; width: 1.7cqw; height: 1.7cqw; border-left: 2px solid var(--fg); border-top: 2px solid var(--fg); pointer-events: none; }
+[data-theme="contraste"] .w-next .val, [data-theme="contraste"] .w-next .lab { color: var(--accent); }
+[data-theme="contraste"] .w-next::before, [data-theme="contraste"] .w-next .ev time { border-color: var(--accent); color: var(--accent); }
+[data-theme="contraste"] .big { letter-spacing: -.055em; }
+[data-theme="contraste"] .w-chain .sub, [data-theme="contraste"] .w-count .sub { font-size: 1.3cqw; }
+[data-theme="contraste"] .w-clock .sub { font-size: 1.2cqw; }
+[data-theme="contraste"] .w-clock .sub, [data-theme="contraste"] .w-count .sub { transform: translateY(-1cqw); }

@@ -1,0 +1,26 @@
+[data-theme="estacao"] {
+  --paper: #0E1726; --ink: #F2F4F7;
+  --bg: var(--paper); --fg: var(--ink); --dim: #7C8CA5; --accent: #F2C230; --plate: #F2C230; --plate-ink: #0E1726;
+  --up: #5FD19A; --down: #F2726B; --line: #41516A;
+  --surface: #16233A; --surface-alt: #16233A;
+  --font-display: 'Saira Condensed', sans-serif; --font-body: 'Saira Condensed', sans-serif;
+  --radius: 0; --gap: 1.3cqw; --pad: 2.6cqw;
+  --size-clock: 12cqw; --size-big: 12cqw; --size-val: 4cqw; --size-sub: 1.8cqw; --size-lab: 1.15cqw;
+}
+[data-theme="estacao"] .vitral-grid {
+  grid-template-rows: 1.4fr 1.3fr 1.3fr 1.5fr;
+  grid-template-columns: 1.2fr 1.2fr 1fr 1.15fr;
+  grid-template-areas: "clock clock clock fx" "work work home btc" "work work home weather" "next next chain count";
+}
+[data-theme="estacao"] .w { background: #16233A; padding: 1.3cqw 1.5cqw; }
+[data-theme="estacao"] .w-clock { background: none; flex-direction: row; align-items: baseline; gap: 2.2cqw; }
+[data-theme="estacao"] .w-clock .big { color: var(--fg); }
+[data-theme="estacao"] .big { color: var(--accent); letter-spacing: .01em; }
+[data-theme="estacao"] .ev { border-bottom: 1px solid #24354F; padding: .62cqw 0; }
+[data-theme="estacao"] .ev:last-child { border-bottom: 0; }
+[data-theme="estacao"] .w-next { background: var(--plate); color: var(--plate-ink); }
+[data-theme="estacao"] .w-next .lab, [data-theme="estacao"] .w-next .sub { color: var(--plate-ink); }
+[data-theme="estacao"] .w-next .stale, [data-theme="estacao"] .w-next .source { color: var(--plate-ink); }
+/* up/down green and red vanish on the yellow plate; free/busy stays a word, set in weight */
+[data-theme="estacao"] .w-next .status { color: var(--plate-ink); font-weight: 700; }
+[data-theme="estacao"] .lab { font-family: var(--font-display); }

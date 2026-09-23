@@ -1,0 +1,95 @@
+/* REQUIRED:
+ --bg --fg --dim --accent --line --up --down --surface --surface-alt
+ --font-display --font-body --radius --gap --pad --size-clock --size-big --size-val --size-sub --size-lab
+ END REQUIRED
+ Themes own palette, typography and grid. All text roles meet 4.5:1 on every surface.
+*/
+@font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'IBM Plex Mono'; src: url('../fonts/ibm-plex-mono-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg, #0A0A08); color: var(--fg, #FFB000); }
+body { margin: 0; min-height: 100%; font-family: var(--font-body, monospace); overflow-x: hidden; }
+.vitral-container { container-type: inline-size; container-name: panel; width: min(100vw, calc(100dvh * 16 / 9)); height: 100vh; height: 100dvh; margin-inline: auto; }
+.vitral-viewport { width: 100%; height: 100%; overflow: clip; }
+.controls { position: fixed; z-index: 10; inset: auto 1rem 1rem auto; display: flex; align-items: center; gap: .6rem; padding: .4rem; color: var(--dim); font-size: 14px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .15s ease; }
+.controls.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+.controls button { min-height: 44px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: var(--radius); padding: .4rem .7rem; font: inherit; cursor: pointer; }
+.controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vitral-grid { display: grid; width: 100%; height: 100vh; height: 100dvh; gap: var(--gap); padding: var(--pad); align-items: stretch; grid-auto-rows: minmax(0, 1fr); overflow: clip; }
+.w { display: flex; flex-direction: column; justify-content: flex-start; position: relative; min-width: 0; min-height: 0; border-radius: var(--radius); background: var(--surface); overflow: hidden; overflow-wrap: anywhere; }
+.w-clock { justify-content: center; }
+.w-clock { grid-area: clock; } .w-work { grid-area: work; } .w-home { grid-area: home; }
+.w-next { grid-area: next; } .w-btc { grid-area: btc; } .w-fx { grid-area: fx; }
+.w-weather { grid-area: weather; } .w-chain { grid-area: chain; } .w-count { grid-area: count; }
+.lab { font-size: var(--size-lab); color: var(--dim); text-transform: uppercase; letter-spacing: .12em; line-height: 1.5; margin-bottom: .55cqw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.big { font: 600 calc(var(--size-clock) * var(--fit-scale, 1))/.92 var(--font-display); letter-spacing: -.06em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.w:not(.w-clock) .big { font-size: calc(var(--size-big) * var(--fit-scale, 1)); }
+.val { font: 600 calc(var(--size-val) * var(--fit-scale, 1))/1.25 var(--font-display); font-variant-numeric: tabular-nums; margin: .4cqw 0; white-space: nowrap; }
+.sub, .ev { font-size: var(--size-sub); line-height: 1.3; }
+.sub { color: var(--dim); }
+.stale { display: inline; }
+.next-title { display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; line-height: 1.2; max-height: calc(2 * 1.2em); font-size: calc(var(--size-val) * .7 * var(--fit-scale, 1)); }
+.rows { display: grid; gap: .35cqw; }
+.ev { display: grid; grid-template-columns: auto 1fr; gap: 1.1cqw; align-items: baseline; }
+.event-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ev time { color: var(--accent); font-variant-numeric: tabular-nums; }
+.day { margin-top: .5cqw; color: var(--accent); }
+.source { font-size: calc(var(--size-lab) * .9); color: var(--dim); margin-top: .65cqw; }
+.sub span, .pair-row span { white-space: nowrap; }
+.currencies { white-space: nowrap; }
+.currency { white-space: nowrap; }
+.stale, .degraded { color: var(--accent); }
+.unavailable { color: var(--down); }
+.setup-hint { color: var(--dim); }
+.change.up, .free, .status.free { color: var(--up); } .change.down, .busy, .status.busy { color: var(--down); }
+.hourly { display: flex; gap: .8cqw; flex-wrap: nowrap; overflow: clip; margin-top: .7cqw; }
+.forecast { flex: none; }
+.forecast { border-top: 1px solid var(--line); }
+.countdown-entry + .countdown-entry { border-top: 1px solid var(--line); margin-top: 1cqw; padding-top: 1cqw; }
+
+@container panel (max-width: 620px) {
+  .vitral-viewport { height: auto; min-height: 100vh; min-height: 100dvh; overflow-y: auto; overflow-x: clip; }
+  .vitral-grid {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    grid-auto-rows: auto;
+    align-content: start;
+    overflow: visible;
+    grid-template-rows: none !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-areas: "clock clock" "next next" "work home" "btc fx" "weather chain" "count count" !important;
+  }
+  .w { min-height: 18cqw; overflow: visible; justify-content: flex-start; }
+  .big { font-size: calc(20cqw * var(--fit-scale, 1)); }
+  .w-clock .big { font-size: calc(20cqw * var(--fit-scale, 1)); }
+  .val { font-size: 6.4cqw; }
+  .sub, .ev { font-size: 3.1cqw; }
+  .lab { font-size: 2.4cqw; }
+  .currencies .separator:nth-of-type(3), .currencies .currency:nth-of-type(4),
+  .currencies .separator:nth-of-type(5), .currencies .currency:nth-of-type(6) { display: none; }
+}
+
+@container panel (max-width: 370px) {
+  .vitral-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "clock" "next" "work" "home" "btc" "fx" "weather" !important;
+  }
+  .w-chain, .w-count { display: none; }
+  .w { min-height: 30cqw; }
+  .big { font-size: calc(26cqw * var(--fit-scale, 1)); }
+  .w-clock .big { font-size: calc(26cqw * var(--fit-scale, 1)); }
+  .val { font-size: 9cqw; }
+  .sub, .ev { font-size: 4.4cqw; }
+  .lab { font-size: 3.4cqw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitral-grid { transition: none; }
+}
+@font-face { font-family: 'Saira Condensed'; src: url('../fonts/saira-condensed-500.woff2') format('woff2'); font-weight: 400 500; font-display: swap; }
+@font-face { font-family: 'Saira Condensed'; src: url('../fonts/saira-condensed-700.woff2') format('woff2'); font-weight: 600 700; font-display: swap; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/archivo-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/archivo-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Archivo'; src: url('../fonts/archivo-700.woff2') format('woff2'); font-weight: 600 700; font-display: swap; }

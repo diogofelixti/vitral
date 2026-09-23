@@ -1,0 +1,17 @@
+{
+  "name": "vitral-api",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "//node-ical": "Pinned exact, not caret: 0.20.1 pulls a vulnerable uuid transitively (GHSA-w5hq-g745-h8pq); 0.22.1 drops uuid/axios/moment-timezone from its dependency tree entirely while keeping the same rrule@2.8.1 recurrence engine -- ical.sync.parseICS() output verified byte-identical against this project's fixtures before switching.",
+  "dependencies": {
+    "node-ical": "0.22.1",
+    "yaml": "^2.5.0",
+    "zod": "^3.23.8"
+  }
+}

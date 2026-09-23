@@ -1,0 +1,17 @@
+[data-theme="terminal"] {
+  --amber: #FFB000; --amber-dim: #BA8B42; --void: #0A0A08;
+  --rule: #2A2418; --phosphor: #46D46A; --ember: #E2574C;
+  --bg: var(--void); --fg: var(--amber); --dim: var(--amber-dim);
+  --accent: var(--phosphor); --line: var(--rule); --up: var(--phosphor); --down: var(--ember);
+  --surface: #11110F; --surface-alt: #11110F;
+  --font-display: 'IBM Plex Mono', ui-monospace, monospace; --font-body: var(--font-display);
+  --radius: 3px; --gap: 1.1cqw; --pad: 2.2cqw;
+  --size-clock: 9cqw; --size-big: 9cqw; --size-val: 3cqw; --size-sub: 1.45cqw; --size-lab: 1.05cqw;
+}
+[data-theme="terminal"] .vitral-grid {
+  grid-template-rows: 1.1fr 1.55fr 1.05fr 1.3fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas: "clock clock chain chain" "work work home home" "next next count count" "btc fx weather weather";
+}
+[data-theme="terminal"] .w { border: 1px solid var(--line); padding: 1.1cqw 1.3cqw; }
+[data-theme="terminal"] .lab::before { content: "› "; }

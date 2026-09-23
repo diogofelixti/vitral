@@ -1,0 +1,22 @@
+[data-theme="neon"] {
+  --paper: #04070A; --ink: #B4F5CE;
+  --bg: var(--paper); --fg: var(--ink); --dim: #4B9B72; --accent: #FF5FD1;
+  --up: #2BFF95; --down: #FF4E7A; --line: #14302A;
+  --surface: var(--bg); --surface-alt: var(--bg);
+  --font-display: 'IBM Plex Mono', monospace; --font-body: 'IBM Plex Mono', monospace;
+  --radius: 3px; --gap: 1.1cqw; --pad: 2.2cqw;
+  --size-clock: 13cqw; --size-big: 13cqw; --size-val: 3.4cqw; --size-sub: 1.5cqw; --size-lab: 1cqw;
+}
+[data-theme="neon"] .vitral-grid {
+  grid-template-rows: 1.2fr 1.4fr 1.2fr 1.2fr;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-areas: "clock clock next" "work home next" "btc chain weather" "fx count count";
+}
+[data-theme="neon"] .w { border-left: 2px solid #14302A; border-top: 0; border-right: 0; border-bottom: 0; padding: 1.2cqw 0 1.2cqw 1.3cqw; }
+[data-theme="neon"] .vitral-grid { background-image: linear-gradient(#0C1A16 .05cqw, transparent .05cqw), linear-gradient(90deg, #0C1A16 .05cqw, transparent .05cqw); background-size: 2.6cqw 2.6cqw; }
+[data-theme="neon"] .w-clock { border-left: 0; padding-left: 0; }
+[data-theme="neon"] .big { color: #DFFFF0; font-weight: 500; text-shadow: 0 0 .09em rgba(43,255,149,.75), 0 0 .34em rgba(43,255,149,.3); }
+[data-theme="neon"] .w-next { border-left-color: var(--accent); }
+[data-theme="neon"] .w-next .val, [data-theme="neon"] .w-next .lab { color: var(--accent); text-shadow: 0 0 .3em rgba(255,95,209,.45); }
+[data-theme="neon"] .val { color: #DFFFF0; }
+[data-theme="neon"] .ev time { color: var(--up); }

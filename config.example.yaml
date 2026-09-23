@@ -1,0 +1,25 @@
+# Vitral configuration.
+#
+# This file is meant to be committed and shared. Never put secrets in it —
+# GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and VITRAL_PORT live only in .env.
+
+language: pt-BR
+timezone: America/Sao_Paulo
+location: { latitude: -23.55, longitude: -46.63, label: "São Paulo" }
+bitcoin: { providers: [coingecko, coinbase], currencies: [brl, usd], primary: brl }
+fx: { providers: [awesomeapi], pairs: [USD-BRL] }
+weather: { providers: [open-meteo] }
+onchain: { providers: [mempool] }
+# Both calendars start empty and the panel says so. Fill in one of them:
+#   ics-url: paste the calendar's secret iCal address as `url` (no OAuth).
+#   google:  set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env, then open
+#            http://localhost:8080/auth/google once, on this machine.
+calendars:
+  work:     { provider: google, calendarId: primary, label: { pt-BR: Trabalho, en: Work } }
+  personal: { provider: ics-url, label: { pt-BR: Pessoal, en: Personal } }
+  #         { provider: ics-url, url: "https://calendar.google.com/calendar/ical/.../basic.ics", ... }
+countdowns:
+  - { date: 2026-12-31, label: { pt-BR: "Réveillon", en: "New Year's Eve" } }
+  # - { date: 2027-01-15, label: "Férias" }
+screensaver: { pixelShift: true, nightDim: { from: "22:00", to: "06:00", opacity: 0.45 } }
+theme: terminal

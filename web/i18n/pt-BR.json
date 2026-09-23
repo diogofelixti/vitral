@@ -1,0 +1,76 @@
+{
+  "widgets": {
+    "next": "Próximo compromisso",
+    "work": "Trabalho",
+    "personal": "Pessoal",
+    "bitcoin": "Bitcoin",
+    "fx": "Câmbio",
+    "weather": "Clima",
+    "onchain": "On-chain",
+    "countdown": "Contagem regressiva",
+    "clock": "Hora local"
+  },
+  "next": {
+    "in": "em {duration}",
+    "now": "agora",
+    "free": "livre",
+    "busy": "ocupado",
+    "none": "Sem próximo compromisso",
+    "duration": "{n} min"
+  },
+  "onchain": {
+    "block": "bloco",
+    "fee": "{n} sat/vB",
+    "halving": "halving em {n} d",
+    "difficulty": "Dificuldade · pendente",
+    "blocks": "Faltam {n} blocos"
+  },
+  "weather": {
+    "sunset": "pôr {time}",
+    "sunrise": "nascer {time}",
+    "range": "min {min}° / max {max}°",
+    "hourly": "Próximas horas"
+  },
+  "countdown": {
+    "none": "nenhuma data configurada",
+    "days": "dias",
+    "today": "hoje",
+    "past": "dias atrás"
+  },
+  "age": {
+    "seconds": "há {n} s",
+    "minutes": "há {n} min",
+    "hours": "há {n} h",
+    "days": "há {n} d"
+  },
+  "errors": {
+    "PROVIDER_UNAVAILABLE": "fonte indisponível",
+    "NETWORK_ERROR": "sem rede",
+    "INTERNAL_ERROR": "erro interno",
+    "NOT_FOUND": "não encontrado",
+    "UNKNOWN_PROFILE": "agenda desconhecida",
+    "GOOGLE_NOT_CONFIGURED": "Google não configurado",
+    "CALENDAR_NOT_CONFIGURED": "agenda não configurada",
+    "GOOGLE_REAUTH_REQUIRED": "Reconecte a agenda Google",
+    "INVALID_REQUEST": "Requisição inválida",
+    "INVALID_CURRENCY": "Moeda não suportada",
+    "INVALID_PAIR": "Par não suportado"
+  },
+  "calendar": {
+    "empty": "Sem eventos hoje ou amanhã",
+    "allDay": "Dia inteiro",
+    "today": "Hoje",
+    "tomorrow": "Amanhã",
+    "more": "+{n} mais"
+  },
+  "status": {
+    "provider": "Fonte: {provider}",
+    "fallback": "Fonte alternativa: {provider}",
+    "loading": "Carregando"
+  },
+  "controls": {
+    "theme": "Tema · T",
+    "language": "Idioma · L",
+    "fullscreen": "Tela cheia · F"
+  }
+}

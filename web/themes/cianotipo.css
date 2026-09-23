@@ -1,0 +1,20 @@
+[data-theme="cianotipo"] {
+  --paper: #E7ECF1; --ink: #0F3057;
+  --bg: var(--paper); --fg: var(--ink); --dim: #496783; --accent: #A63A0A;
+  --up: #1B6B4A; --down: #A63A0A; --line: #9FB4C9;
+  --surface: #F6F8FA; --surface-alt: #F6F8FA;
+  --font-display: 'IBM Plex Mono', monospace; --font-body: 'Archivo', sans-serif;
+  --radius: 3px; --gap: 1.6cqw; --pad: 2.8cqw;
+  --size-clock: 11.47cqw; --size-big: 11.5cqw; --size-val: 3.3cqw; --size-sub: 1.55cqw; --size-lab: 1.05cqw;
+}
+[data-theme="cianotipo"] .vitral-grid {
+  grid-template-rows: 1.15fr 1.65fr 1.15fr 1.15fr;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  grid-template-areas: "clock clock next" "work home next" "btc fx weather" "chain count count";
+}
+[data-theme="cianotipo"] .w { border: 1px solid var(--line); padding: 1.2cqw 1.4cqw; }
+[data-theme="cianotipo"] .vitral-grid { background-image: linear-gradient(rgba(15,48,87,.07) .05cqw, transparent .05cqw), linear-gradient(90deg, rgba(15,48,87,.07) .05cqw, transparent .05cqw); background-size: 1.3cqw 1.3cqw; }
+[data-theme="cianotipo"] .w-clock { background: none; border: 0; border-bottom: 2px solid var(--fg); border-radius: 0; padding-left: 0; }
+[data-theme="cianotipo"] .w-next { border-color: var(--accent); border-left-width: 3px; }
+[data-theme="cianotipo"] .w-next .val, [data-theme="cianotipo"] .ev time { color: var(--accent); }
+[data-theme="cianotipo"] .lab { letter-spacing: .18em; }

@@ -1,0 +1,76 @@
+{
+  "widgets": {
+    "next": "Next event",
+    "work": "Work",
+    "personal": "Personal",
+    "bitcoin": "Bitcoin",
+    "fx": "Exchange",
+    "weather": "Weather",
+    "onchain": "On-chain",
+    "countdown": "Countdown",
+    "clock": "Local time"
+  },
+  "next": {
+    "in": "in {duration}",
+    "now": "now",
+    "free": "free",
+    "busy": "busy",
+    "none": "No upcoming event",
+    "duration": "{n} min"
+  },
+  "onchain": {
+    "block": "block",
+    "fee": "{n} sat/vB",
+    "halving": "halving in {n} d",
+    "difficulty": "Difficulty · pending",
+    "blocks": "{n} blocks left"
+  },
+  "weather": {
+    "sunset": "sunset {time}",
+    "sunrise": "sunrise {time}",
+    "range": "min {min}° / max {max}°",
+    "hourly": "Next hours"
+  },
+  "countdown": {
+    "none": "no dates set",
+    "days": "days left",
+    "today": "today",
+    "past": "days ago"
+  },
+  "age": {
+    "seconds": "{n} s ago",
+    "minutes": "{n} min ago",
+    "hours": "{n} h ago",
+    "days": "{n} d ago"
+  },
+  "errors": {
+    "PROVIDER_UNAVAILABLE": "source unavailable",
+    "NETWORK_ERROR": "offline",
+    "INTERNAL_ERROR": "internal error",
+    "NOT_FOUND": "not found",
+    "UNKNOWN_PROFILE": "unknown calendar",
+    "GOOGLE_NOT_CONFIGURED": "Google not configured",
+    "CALENDAR_NOT_CONFIGURED": "calendar not set up",
+    "GOOGLE_REAUTH_REQUIRED": "Reconnect Google Calendar",
+    "INVALID_REQUEST": "Invalid request",
+    "INVALID_CURRENCY": "Unsupported currency",
+    "INVALID_PAIR": "Unsupported pair"
+  },
+  "calendar": {
+    "empty": "No events today or tomorrow",
+    "allDay": "All day",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "more": "+{n} more"
+  },
+  "status": {
+    "provider": "Source: {provider}",
+    "fallback": "Alternative source: {provider}",
+    "loading": "Loading"
+  },
+  "controls": {
+    "theme": "Theme · T",
+    "language": "Language · L",
+    "fullscreen": "Fullscreen · F"
+  }
+}

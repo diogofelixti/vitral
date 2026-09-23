@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="terminal">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vitral</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="themes/_contract.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main class="vitral-container">
+    <nav class="controls" aria-label="Controles" aria-hidden="true">
+      <button type="button" data-action="theme"></button>
+      <button type="button" data-action="language"></button>
+      <button type="button" data-action="fullscreen"></button>
+    </nav>
+    <div class="vitral-viewport">
+      <div class="vitral-grid">
+      <vitral-clock class="w w-clock"></vitral-clock>
+      <vitral-agenda class="w w-work" profile="work" data-poll></vitral-agenda>
+      <vitral-agenda class="w w-home" profile="personal" data-poll></vitral-agenda>
+      <vitral-next class="w w-next" data-poll></vitral-next>
+      <vitral-bitcoin class="w w-btc" data-poll></vitral-bitcoin>
+      <vitral-fx class="w w-fx" data-poll></vitral-fx>
+      <vitral-weather class="w w-weather" data-poll></vitral-weather>
+      <vitral-onchain class="w w-chain" data-poll></vitral-onchain>
+      <vitral-countdown class="w w-count"></vitral-countdown>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
