@@ -3,9 +3,12 @@ export class NextEvent extends DataWidget {
   static capability = 'next'
   static path = '/api/calendar/next'
   render(data) {
-    const event = data.next
-    if (!event) { this.append(this.text('val next-title', this.i18n.t('next.none')), this.text('sub', this.i18n.t(data.busy ? 'next.busy' : 'next.free'))); return }
     const at = Date.now()
+    // the answer can be minutes old (cache, stale): an event that has already ended is no
+    // longer the next one, whatever the api said when it was fetched
+    const ended = event => event.allDay ? event.end.slice(0, 10) <= this.i18n.dayKey(at) : Date.parse(event.end) <= at
+    const event = data.next && !ended(data.next) ? data.next : null
+    if (!event) { this.append(this.text('val next-title', this.i18n.t('next.none')), this.text('sub', this.i18n.t(data.busy ? 'next.busy' : 'next.free'))); return }
     const remaining = Math.ceil((Date.parse(event.start) - at) / 60_000)
     const underway = event.allDay
       ? event.start.slice(0, 10) <= this.i18n.dayKey(at) && event.end.slice(0, 10) > this.i18n.dayKey(at)

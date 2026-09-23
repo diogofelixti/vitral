@@ -29,7 +29,11 @@ body { margin: 0; min-height: 100%; font-family: var(--font-body, monospace); ov
 .sub, .ev { font-size: var(--size-sub); line-height: 1.3; }
 .sub { color: var(--dim); }
 .stale { display: inline; }
-.next-title { display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; line-height: 1.2; max-height: calc(2 * 1.2em); font-size: calc(var(--size-val) * .7 * var(--fit-scale, 1)); }
+.lab.with-age { display: flex; gap: 1em; justify-content: space-between; }
+.lab.with-age .lab-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.lab.with-age .stale { flex: none; text-transform: none; letter-spacing: .02em; }
+/* never squeezed to a part-line: when the cell is short, the optional lines give way instead */
+.next-title { flex-shrink: 0; display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; line-height: 1.2; max-height: calc(2 * 1.2em); font-size: calc(var(--size-val) * .7 * var(--fit-scale, 1)); }
 .rows { display: grid; gap: .35cqw; }
 .ev { display: grid; grid-template-columns: auto 1fr; gap: 1.1cqw; align-items: baseline; }
 .event-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -43,7 +47,8 @@ body { margin: 0; min-height: 100%; font-family: var(--font-body, monospace); ov
 .unavailable { color: var(--down); }
 .setup-hint { color: var(--dim); }
 .change.up, .free, .status.free { color: var(--up); } .change.down, .busy, .status.busy { color: var(--down); }
-.hourly { display: flex; gap: .8cqw; flex-wrap: nowrap; overflow: clip; margin-top: .7cqw; }
+/* in em as well as cqw: on a phone .8cqw is three pixels and the hours run together */
+.hourly { display: flex; gap: max(.8cqw, .6em); flex-wrap: nowrap; overflow: clip; margin-top: .7cqw; }
 .forecast { flex: none; }
 .forecast { border-top: 1px solid var(--line); }
 .countdown-entry + .countdown-entry { border-top: 1px solid var(--line); margin-top: 1cqw; padding-top: 1cqw; }
@@ -74,9 +79,8 @@ body { margin: 0; min-height: 100%; font-family: var(--font-body, monospace); ov
 @container panel (max-width: 370px) {
   .vitral-grid {
     grid-template-columns: 1fr !important;
-    grid-template-areas: "clock" "next" "work" "home" "btc" "fx" "weather" !important;
+    grid-template-areas: "clock" "next" "work" "home" "btc" "fx" "weather" "chain" "count" !important;
   }
-  .w-chain, .w-count { display: none; }
   .w { min-height: 30cqw; }
   .big { font-size: calc(26cqw * var(--fit-scale, 1)); }
   .w-clock .big { font-size: calc(26cqw * var(--fit-scale, 1)); }

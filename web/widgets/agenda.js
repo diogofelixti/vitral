@@ -39,7 +39,11 @@ export class Agenda extends DataWidget {
     events.forEach(event => { event.style.removeProperty('display') })
     more.hidden = true
     let hidden = 0
-    const overflows = () => this.scrollHeight > this.clientHeight + 1 || rows.getBoundingClientRect().bottom > this.getBoundingClientRect().bottom + .5
+    const overflows = () => this.scrollHeight > this.clientHeight + 1 || [...this.children].some(child => child.getClientRects().length && child.getBoundingClientRect().bottom > this.getBoundingClientRect().bottom + .5)
+    // the fallback note goes before any event does
+    const source = this.querySelector('.source')
+    source?.style.removeProperty('display')
+    if (source && overflows()) source.style.display = 'none'
     const minimum = events.length > 2 ? 3 : 2
     for (let i = events.length - 1; i >= 0 && events.filter(event => getComputedStyle(event).display !== 'none').length > minimum && overflows(); i--) {
       events[i].style.display = 'none'; hidden++

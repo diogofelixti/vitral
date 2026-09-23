@@ -41,17 +41,26 @@ export class DataWidget extends Widget {
       return
     }
     this.render(this.data, this.meta)
+    // the age of a stale reading rides on the label line, which always has room across and
+    // costs no height; at the end of a support line it pushed the line onto a second row that
+    // the narrow cells could not hold
     const note = this.staleNote(this.meta, this.i18n)
     if (note) {
-      const support = [...this.querySelectorAll('.sub')].at(-1)
-      if (support) support.append(this.separator(), note)
-      else this.append(note)
+      const lab = this.querySelector('.lab')
+      const text = document.createElement('span')
+      text.className = 'lab-text'
+      text.append(...lab.childNodes)
+      lab.classList.add('with-age')
+      lab.append(text, note)
     }
     if (this.meta?.error) this.append(this.text('sub unavailable', this.i18n.t(`errors.${this.meta.error}`)))
     if (this.meta?.provider && this.meta.degraded && this.meta.provider !== 'derived') {
       const text = this.i18n.t('status.fallback', { provider: this.meta.provider })
       const source = this.text(this.meta.degraded ? 'source degraded' : 'source', text)
       source.setAttribute('title', text)
+      // which fallback answered is worth showing, never worth a reading: it gives way first,
+      // right after the forecast hours
+      source.dataset.fitPriority = '90'
       this.append(source)
     }
     this.fitContent()
