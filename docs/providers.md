@@ -1,7 +1,8 @@
 # Data sources
 
 Each kind of information is a **capability**, and each capability has interchangeable
-**providers**. In `config.yaml`, a capability's `providers` list is both the order of
+**providers**. A capability's list of providers, set in **Settings → Market** and **Settings →
+Weather and on-chain** (or in `config.yaml`, if you configure by file), is both the order of
 preference and the fallback chain: the backend tries the first source and, if it fails, the
 next. The answer says which source responded.
 
@@ -97,6 +98,15 @@ event" is derived from both.
 
 A calendar with no `url` (or Google with no credentials) shows as "not set up", with a hint,
 not as an error.
+
+## `geocode`
+
+Used by the setup wizard and the settings menu to turn a city name into coordinates and a
+time zone. Normal form: `{ places: [{ label, region, country, latitude, longitude, timezone }] }`.
+
+| Provider | Covers | `ttl` |
+|---|---|---|
+| `open-meteo` | cities and towns worldwide, names in Portuguese or English | 24 h |
 
 ## Adding a provider
 

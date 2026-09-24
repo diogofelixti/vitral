@@ -94,6 +94,12 @@ export function createGoogleAuth({
       await tokenStore.write(tokens)
     },
 
+    // For the settings menu: is there a grant at all? Reads, never refreshes.
+    async hasGrant() {
+      tokens ??= await tokenStore.read()
+      return Boolean(tokens?.refreshToken)
+    },
+
     async accessToken() {
       tokens ??= await tokenStore.read()
       if (!tokens?.refreshToken) throw new NotAuthenticated('no google token stored')

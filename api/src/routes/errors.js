@@ -11,3 +11,12 @@ export class RouteError extends Error {
     this.code = code
   }
 }
+
+/** A settings payload that failed validation: every problem, as a path and a code. */
+export class FieldErrors extends Error {
+  constructor(errors) {
+    super('INVALID_SETTINGS')
+    this.name = 'FieldErrors'
+    this.errors = errors
+  }
+}

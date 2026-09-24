@@ -54,7 +54,18 @@
     "GOOGLE_REAUTH_REQUIRED": "Reconnect Google Calendar",
     "INVALID_REQUEST": "Invalid request",
     "INVALID_CURRENCY": "Unsupported currency",
-    "INVALID_PAIR": "Unsupported pair"
+    "INVALID_PAIR": "Unsupported pair",
+    "INVALID_SETTINGS": "invalid settings",
+    "UNSUPPORTED_MEDIA_TYPE": "unsupported format",
+    "FORBIDDEN_ORIGIN": "change refused: not from this panel",
+    "PAYLOAD_TOO_LARGE": "too much data",
+    "METHOD_NOT_ALLOWED": "operation not allowed",
+    "SETTINGS_UNAVAILABLE": "settings unavailable",
+    "MISDIRECTED_HOST": "panel address not recognised",
+    "INVALID_QUERY": "type at least 2 letters",
+    "BLOCKED_URL": "address blocked: it points into the local network",
+    "CALENDAR_UNREADABLE": "this calendar could not be read",
+    "INVALID_URL": "use an https:// address"
   },
   "calendar": {
     "empty": "No events today or tomorrow",
@@ -71,6 +82,87 @@
   "controls": {
     "theme": "Theme · T",
     "language": "Language · L",
-    "fullscreen": "Fullscreen · F"
+    "fullscreen": "Fullscreen · F",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "close": "Close",
+    "save": "Save",
+    "saved": "Saved",
+    "unsaved": "There are unsaved changes.",
+    "discard": "Discard",
+    "keepEditing": "Keep editing",
+    "general": { "language": "Language", "theme": "Theme" },
+    "screen": { "pixelShift": "Shift the image gradually", "pixelShiftHint": "Prevents burn-in on OLED and plasma screens.", "nightDim": "Dim at night", "from": "From", "to": "Until", "opacity": "Strength" },
+    "remove": "Remove",
+    "order": {"up": "Move {name} up", "remove": "Drop {name}", "add": "Add {name}"},
+    "market": {"primary": "Featured currency", "fx": "Exchange rates", "newPair": "New pair", "addPair": "Add pair", "pairFormat": "use the USD-BRL format", "bitcoinSources": "Bitcoin sources, in order of preference", "fxSources": "Exchange-rate sources, in order of preference"},
+    "sources": {"intro": "The first in the list is used; the next ones step in when it goes down."},
+    "countdowns": {"date": "Date", "add": "Add countdown"},
+    "sections": { "general": "General", "calendars": "Calendars", "market": "Market", "sources": "Weather and on-chain", "countdowns": "Countdowns", "screen": "Screen", "about": "About" },
+    "about": { "intro": "Vitral is an open-source panel, MIT licensed." }
+  },
+  "setup": {
+    "title": "Set up Vitral",
+    "progress": "Step {n} of {total}",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "language": { "title": "Language", "intro": "Which language should the panel speak? You can switch later with the L key." },
+    "city": {
+      "title": "City", "intro": "For the weather and the time zone of the clock and the calendars.",
+      "search": "City", "none": "No city found.", "current": "Now: {city} ({zone})",
+      "manual": "Set by hand", "name": "Name shown", "latitude": "Latitude", "longitude": "Longitude", "timezone": "Time zone (IANA)"
+    },
+    "calendars": {
+      "title": "Calendars", "intro": "Two calendars side by side. Leave one empty and set it up later if you like.",
+      "none": "None", "ics": "iCal address", "google": "Google Calendar",
+      "url": "Calendar address", "test": "Test", "found": "{n} events in the next 30 days",
+      "googleNote": "You connect Google in the next step.",
+      "kept": "address saved ({host}); leave empty to keep it",
+      "labelPt": "Name in Portuguese", "labelEn": "Name in English"
+    },
+    "google": { "title": "Google Calendar" }
+  },
+  "google": {
+    "intro": "Vitral reads your calendar with read-only access.",
+    "notConfigured": "No Google credentials yet.",
+    "notConnected": "Credentials saved. The account still needs connecting.",
+    "connected": "Connected. Last sync: {at}",
+    "steps": {
+      "1": "Open console.cloud.google.com and create a project (the name does not matter).",
+      "2": "In APIs & Services → Library, enable the Google Calendar API.",
+      "3": "In OAuth consent screen, choose External, fill in a name and an email and add the calendar.readonly scope.",
+      "4": "Publish the app (Publish app): in testing mode Google disconnects the calendar every 7 days.",
+      "5": "In Credentials → Create credentials → OAuth client ID, choose Web application.",
+      "redirect": "Register exactly this redirect URI:"
+    },
+    "copy": "Copy",
+    "copied": "Copied",
+    "secret": "Client secret",
+    "secretKept": "already saved — leave empty to keep it",
+    "saveCredentials": "Save credentials",
+    "changeCredentials": "Change credentials",
+    "connect": "Connect",
+    "reconnect": "Reconnect",
+    "disconnect": "Disconnect",
+    "needsCredentials": "Save the credentials above to be able to connect.",
+    "remote": "Google only completes the connection in a browser on the panel machine. From here, open a tunnel from a computer and connect through http://localhost:",
+    "user": "<user>"
+  },
+  "fields": {
+    "REQUIRED": "required",
+    "INVALID_TYPE": "invalid value",
+    "OUT_OF_RANGE": "out of the allowed range",
+    "EMPTY_LIST": "pick at least one",
+    "INVALID_VALUE": "invalid value",
+    "INVALID_URL": "invalid address",
+    "INVALID_DATE": "invalid date",
+    "INVALID_TIME": "use HH:MM",
+    "UNKNOWN_TIMEZONE": "unknown time zone",
+    "NOT_IN_LIST": "must be one of the chosen currencies",
+    "UNKNOWN_PROVIDER": "unknown source"
   }
 }

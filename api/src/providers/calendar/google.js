@@ -51,4 +51,19 @@ export default {
   },
 
   async capabilities() { return { needsOAuth: true, recurring: true } },
+
+  // For the settings menu, to pick a calendar by name instead of pasting an id.
+  async listCalendars({ http, googleAuth }) {
+    if (!googleAuth) throw new GoogleNotConfigured('google: GOOGLE_CLIENT_ID is not set')
+    const token = await googleAuth.accessToken()
+    const url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=reader'
+    const body = (await http(url, { headers: { authorization: `Bearer ${token}` } })).json()
+    return {
+      calendars: (body.items ?? []).map(c => ({
+        id: String(c.id),
+        name: String(c.summaryOverride ?? c.summary ?? c.id),
+        primary: Boolean(c.primary),
+      })),
+    }
+  },
 }

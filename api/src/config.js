@@ -1,41 +1,7 @@
 import { parseDocument, LineCounter } from 'yaml'
-import { z } from 'zod'
+import { ConfigSchema as Schema } from './settings/schema.js'
 
 export class ConfigError extends Error {}
-
-/** A label may be one string or one per language. One string means both. */
-const Label = z.union([z.string(), z.object({ 'pt-BR': z.string(), en: z.string() })])
-  .transform(v => (typeof v === 'string' ? { 'pt-BR': v, en: v } : v))
-
-const Calendar = z.object({
-  provider: z.enum(['google', 'ics-url']),
-  calendarId: z.string().optional(),
-  url: z.string().url().optional(),
-  label: Label,
-})
-
-const Schema = z.object({
-  language: z.enum(['pt-BR', 'en']).default('pt-BR'),
-  timezone: z.string().default('America/Sao_Paulo'),
-  location: z.object({ latitude: z.number(), longitude: z.number(), label: z.string() }),
-  bitcoin: z.object({
-    providers: z.array(z.string()).min(1),
-    currencies: z.array(z.string()).min(1),
-    primary: z.string(),
-  }).refine(b => b.currencies.includes(b.primary), {
-    message: 'primary must be one of the listed currencies', path: ['primary'],
-  }),
-  fx: z.object({ providers: z.array(z.string()).min(1), pairs: z.array(z.string()).min(1) }),
-  weather: z.object({ providers: z.array(z.string()).min(1) }),
-  onchain: z.object({ providers: z.array(z.string()).min(1) }),
-  calendars: z.object({ work: Calendar, personal: Calendar }),
-  countdowns: z.array(z.object({ date: z.coerce.date(), label: Label })).default([]),
-  screensaver: z.object({
-    pixelShift: z.boolean().default(true),
-    nightDim: z.object({ from: z.string(), to: z.string(), opacity: z.number() }).optional(),
-  }).default({}),
-  theme: z.string().default('terminal'),
-})
 
 export function loadConfig(yamlText) {
   const lineCounter = new LineCounter()

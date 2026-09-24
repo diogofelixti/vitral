@@ -1,8 +1,11 @@
 import { dataRoutes } from './routes/data.js'
 import { metaRoutes } from './routes/meta.js'
 import { authRoutes } from './routes/auth.js'
+import { settingsRoutes } from './routes/settings.js'
 import { InvalidState, NotAuthenticated, GoogleNotConfigured } from './auth/google.js'
 import { CalendarNotConfigured } from './providers/calendar/lib/not-configured.js'
+import { createSettingsHolder } from './settings/holder.js'
+import { assertKnownHost } from './security/host-guard.js'
 
 /**
  * What a failed provider chain means to the person looking at the panel.
@@ -19,7 +22,10 @@ function unavailableCode(err) {
 }
 
 export function createApp(deps) {
-  const routes = [...metaRoutes(deps), ...dataRoutes(deps), ...authRoutes(deps)]
+  // Older callers and tests pass a plain config; wrap it so every route has one shape to read.
+  const settings = deps.settings ?? createSettingsHolder({ config: deps.config, googleAuth: deps.googleAuth ?? null })
+  const all = { ...deps, settings }
+  const routes = [...metaRoutes(all), ...dataRoutes(all), ...authRoutes(all), ...settingsRoutes(all)]
 
   const send = (res, status, body) => {
     res.writeHead(status, {
@@ -31,6 +37,13 @@ export function createApp(deps) {
 
   return async (req, res) => {
     const url = new URL(req.url, 'http://localhost')
+    // Before any route, including a read: a request addressed to a name
+    // this panel does not answer for is a rebinding attempt, not a request.
+    try {
+      assertKnownHost(req)
+    } catch (err) {
+      return send(res, err.status, { error: err.code })
+    }
     for (const [pattern, handler] of routes) {
       const match = pattern.exec(url.pathname)
       if (!match) continue
@@ -47,6 +60,7 @@ export function createApp(deps) {
             triedProviders: err.triedProviders,
           })
         }
+        if (err.name === 'FieldErrors') return send(res, 422, { error: 'INVALID_SETTINGS', errors: err.errors })
         if (err.name === 'RouteError') return send(res, err.status, { error: err.code })
         if (err instanceof InvalidState) return send(res, 400, { error: 'INVALID_REQUEST' })
         // Unexpected: the response says nothing, the container log says why.

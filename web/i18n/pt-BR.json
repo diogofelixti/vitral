@@ -54,7 +54,18 @@
     "GOOGLE_REAUTH_REQUIRED": "Reconecte a agenda Google",
     "INVALID_REQUEST": "Requisição inválida",
     "INVALID_CURRENCY": "Moeda não suportada",
-    "INVALID_PAIR": "Par não suportado"
+    "INVALID_PAIR": "Par não suportado",
+    "INVALID_SETTINGS": "configurações inválidas",
+    "UNSUPPORTED_MEDIA_TYPE": "formato não aceito",
+    "FORBIDDEN_ORIGIN": "alteração recusada: origem diferente do painel",
+    "PAYLOAD_TOO_LARGE": "dados grandes demais",
+    "METHOD_NOT_ALLOWED": "operação não permitida",
+    "SETTINGS_UNAVAILABLE": "configurações indisponíveis",
+    "MISDIRECTED_HOST": "endereço do painel não reconhecido",
+    "INVALID_QUERY": "digite pelo menos 2 letras",
+    "BLOCKED_URL": "endereço bloqueado: aponta para a rede interna",
+    "CALENDAR_UNREADABLE": "não foi possível ler esta agenda",
+    "INVALID_URL": "use um endereço https://"
   },
   "calendar": {
     "empty": "Sem eventos hoje ou amanhã",
@@ -71,6 +82,87 @@
   "controls": {
     "theme": "Tema · T",
     "language": "Idioma · L",
-    "fullscreen": "Tela cheia · F"
+    "fullscreen": "Tela cheia · F",
+    "settings": "Configurações"
+  },
+  "settings": {
+    "title": "Configurações",
+    "close": "Fechar",
+    "save": "Salvar",
+    "saved": "Salvo",
+    "unsaved": "Há alterações não salvas.",
+    "discard": "Descartar",
+    "keepEditing": "Continuar editando",
+    "general": { "language": "Idioma", "theme": "Tema" },
+    "screen": { "pixelShift": "Deslocar a imagem aos poucos", "pixelShiftHint": "Evita marcas permanentes em telas OLED e de plasma.", "nightDim": "Escurecer à noite", "from": "Das", "to": "Às", "opacity": "Intensidade" },
+    "remove": "Remover",
+    "order": {"up": "Subir {name}", "remove": "Tirar {name}", "add": "Adicionar {name}"},
+    "market": {"primary": "Moeda principal", "fx": "Câmbio", "newPair": "Novo par", "addPair": "Adicionar par", "pairFormat": "use o formato USD-BRL", "bitcoinSources": "Fontes do bitcoin, em ordem de preferência", "fxSources": "Fontes do câmbio, em ordem de preferência"},
+    "sources": {"intro": "A primeira da lista é usada; as seguintes entram quando ela cai."},
+    "countdowns": {"date": "Data", "add": "Adicionar contador"},
+    "sections": { "general": "Geral", "calendars": "Agendas", "market": "Mercado", "sources": "Clima e on-chain", "countdowns": "Contadores", "screen": "Tela", "about": "Sobre" },
+    "about": { "intro": "Vitral é um painel de código aberto, licença MIT." }
+  },
+  "setup": {
+    "title": "Configurar o Vitral",
+    "progress": "Passo {n} de {total}",
+    "skip": "Pular",
+    "back": "Voltar",
+    "next": "Próximo",
+    "finish": "Concluir",
+    "language": { "title": "Idioma", "intro": "Em que idioma o painel deve falar? Dá para trocar depois com a tecla L." },
+    "city": {
+      "title": "Cidade", "intro": "Para o clima e o fuso horário do relógio e das agendas.",
+      "search": "Cidade", "none": "Nenhuma cidade encontrada.", "current": "Agora: {city} ({zone})",
+      "manual": "Ajustar à mão", "name": "Nome mostrado", "latitude": "Latitude", "longitude": "Longitude", "timezone": "Fuso horário (IANA)"
+    },
+    "calendars": {
+      "title": "Agendas", "intro": "Duas agendas lado a lado. Dá para deixar vazia e configurar depois.",
+      "none": "Nenhuma", "ics": "Endereço iCal", "google": "Google Agenda",
+      "url": "Endereço da agenda", "test": "Testar", "found": "{n} eventos nos próximos 30 dias",
+      "googleNote": "Você conecta o Google no próximo passo.",
+      "kept": "endereço salvo ({host}); deixe vazio para manter",
+      "labelPt": "Nome em português", "labelEn": "Nome em inglês"
+    },
+    "google": { "title": "Google Agenda" }
+  },
+  "google": {
+    "intro": "O Vitral lê a sua agenda com permissão somente de leitura.",
+    "notConfigured": "Ainda sem credenciais do Google.",
+    "notConnected": "Credenciais salvas. Falta conectar a conta.",
+    "connected": "Conectado. Última sincronização: {at}",
+    "steps": {
+      "1": "Abra console.cloud.google.com e crie um projeto (o nome não importa).",
+      "2": "Em APIs e serviços → Biblioteca, ative a Google Calendar API.",
+      "3": "Em Tela de consentimento OAuth, escolha Externo, preencha nome e e-mail e adicione o escopo calendar.readonly.",
+      "4": "Publique o app (Publicar aplicativo): em modo de teste o Google desconecta a agenda a cada 7 dias.",
+      "5": "Em Credenciais → Criar credenciais → ID do cliente OAuth, escolha Aplicativo da Web.",
+      "redirect": "Cadastre exatamente este URI de redirecionamento:"
+    },
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "secret": "Chave secreta do cliente",
+    "secretKept": "já salva — deixe em branco para manter",
+    "saveCredentials": "Salvar credenciais",
+    "changeCredentials": "Trocar credenciais",
+    "connect": "Conectar",
+    "reconnect": "Reconectar",
+    "disconnect": "Desconectar",
+    "needsCredentials": "Salve as credenciais acima para poder conectar.",
+    "remote": "O Google só conclui a conexão num navegador da máquina do painel. Daqui, abra um túnel a partir de um computador e conecte por http://localhost:",
+    "user": "<usuário>"
+  },
+  "fields": {
+    "REQUIRED": "obrigatório",
+    "INVALID_TYPE": "valor inválido",
+    "OUT_OF_RANGE": "fora do intervalo permitido",
+    "EMPTY_LIST": "escolha pelo menos um",
+    "INVALID_VALUE": "valor inválido",
+    "INVALID_URL": "endereço inválido",
+    "INVALID_DATE": "data inválida",
+    "INVALID_TIME": "use HH:MM",
+    "UNKNOWN_TIMEZONE": "fuso horário desconhecido",
+    "NOT_IN_LIST": "precisa estar entre as moedas escolhidas",
+    "UNKNOWN_PROVIDER": "fonte desconhecida"
   }
 }

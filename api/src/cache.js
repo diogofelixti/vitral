@@ -18,5 +18,8 @@ export function createCache({ now = Date.now } = {}) {
     set(key, value, ttlSeconds) {
       store.set(key, { value, at: now(), ttl: ttlSeconds })
     },
+    // A settings save can change any key's meaning (a new city, another
+    // provider order); forgetting everything is cheaper than reasoning about which.
+    clear() { store.clear() },
   }
 }

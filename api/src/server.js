@@ -1,47 +1,46 @@
 import { createServer } from 'node:http'
-import { readFile } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import { createApp } from './app.js'
-import { loadConfig, ConfigError } from './config.js'
 import { createCache } from './cache.js'
 import { createRegistry } from './registry.js'
 import { createResolver } from './resolve.js'
 import { createHttp } from './http.js'
-import { createGoogleAuth } from './auth/google.js'
 import { createTokenStore } from './token-store.js'
+import { createSettingsStore } from './settings/store.js'
+import { bootSettings } from './settings/boot.js'
+import { createSettingsService } from './settings/service.js'
 
 const env = process.env
 const port = Number(env.PORT ?? 3100)
+const configPath = env.CONFIG_PATH ?? '/app/config/config.yaml'
+
+// A file to import, or nothing: a missing path, or a directory Docker made
+// in its place, both mean the owner configures through the wizard.
+async function readYaml() {
+  try { return (await stat(configPath)).isFile() ? await readFile(configPath, 'utf8') : null } catch { return null }
+}
 
 try {
-  const config = loadConfig(await readFile(env.CONFIG_PATH ?? '/app/config.yaml', 'utf8'))
   const http = createHttp()
   const registry = await createRegistry()
-
-  // Both halves or neither: a client id without its secret cannot complete
-  // a consent, and failing at the callback is a worse place to find out.
-  const googleAuth = env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
-    ? createGoogleAuth({
-        clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET,
-        // Google accepts a plain-http redirect only for localhost, so this
-        // is where the owner opens /auth/google from: the machine running
-        // the panel, on the port the host publishes.
-        redirectUri: `http://localhost:${env.VITRAL_PORT ?? 8080}/auth/google/callback`,
-        tokenStore: createTokenStore(env.TOKEN_PATH ?? '/data/tokens.json'),
-        http,
-      })
-    : null
-
-  const resolver = createResolver({ registry, cache: createCache(), ctx: { http, googleAuth } })
-
-  const server = createServer(createApp({ config, resolver, registry, googleAuth }))
+  const cache = createCache()
+  const ctx = { http }
+  const tokenStore = createTokenStore(env.TOKEN_PATH ?? '/data/tokens.json')
+  const store = createSettingsStore(env.SETTINGS_PATH ?? '/data/settings.json')
+  const boot = await bootSettings({ store, readYaml, env })
+  // Google accepts a plain-http redirect only for localhost, so this is
+  // where the owner consents from: the machine running the panel, on the
+  // port the host publishes.
+  const redirectUri = `http://localhost:${env.VITRAL_PORT ?? 8080}/auth/google/callback`
+  const service = createSettingsService({ store, boot, cache, ctx, tokenStore, redirectUri, http })
+  const resolver = createResolver({ registry, cache, ctx })
+  const server = createServer(createApp({ settings: service.holder, service, resolver, registry, ctx }))
   server.listen(port, () => {
     console.log(`vitral api listening on ${server.address().port}`)
-    console.log(`google calendar: ${googleAuth ? 'client configured' : 'not configured'}`)
+    console.log(`google calendar: ${service.holder.current().googleAuth ? 'client configured' : 'not configured'}`)
+    console.log(`setup: ${service.holder.current().setupDone ? 'done' : 'pending'}`)
   })
 } catch (err) {
-  // A config mistake must stop the container with a readable line, not boot
-  // a half-empty panel the user spends half an hour diagnosing.
-  console.error(err instanceof ConfigError ? err.message : err)
+  console.error(err)
   process.exit(1)
 }

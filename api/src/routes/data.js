@@ -72,38 +72,51 @@ function startOfTomorrow(timezone, now) {
   return defaultWindow(timezone, new Date(today.getTime() + 36 * 3600_000)).from.getTime()
 }
 
-export function dataRoutes({ config, resolver, googleAuth, now = Date.now }) {
-  const resolveCalendar = profile => {
+export function dataRoutes({ settings, resolver, now = Date.now }) {
+  const resolveCalendar = (config, googleAuth, profile) => {
     const calendar = config.calendars[profile]
     const missing = notSetUp(calendar, googleAuth)
     if (missing) return Promise.reject(new ProvidersUnavailable('calendar', [], [missing]))
     return resolver.resolve('calendar', [calendar.provider], calendarParams(calendar, config))
+      .then(envelope => {
+        if (calendar.provider === 'google' && !envelope.stale) settings.markGoogleSync?.(envelope.updatedAt)
+        return envelope
+      })
   }
 
   return [
-    [/^\/api\/bitcoin$/, async (_req, url) =>
-      resolver.resolve('bitcoin', config.bitcoin.providers, { currencies: currenciesFrom(url, config) })],
+    [/^\/api\/bitcoin$/, async (_req, url) => {
+      const { config } = settings.current()
+      return resolver.resolve('bitcoin', config.bitcoin.providers, { currencies: currenciesFrom(url, config) })
+    }],
 
-    [/^\/api\/bitcoin\/currencies$/, async () =>
-      resolver.resolve('bitcoin', config.bitcoin.providers, {}, { via: 'capabilities', ttl: CURRENCY_LIST_TTL })],
+    [/^\/api\/bitcoin\/currencies$/, async () => {
+      const { config } = settings.current()
+      return resolver.resolve('bitcoin', config.bitcoin.providers, {}, { via: 'capabilities', ttl: CURRENCY_LIST_TTL })
+    }],
 
-    [/^\/api\/fx$/, async (_req, url) =>
-      resolver.resolve('fx', config.fx.providers, { pairs: pairsFrom(url, config) })],
+    [/^\/api\/fx$/, async (_req, url) => {
+      const { config } = settings.current()
+      return resolver.resolve('fx', config.fx.providers, { pairs: pairsFrom(url, config) })
+    }],
 
     [/^\/api\/weather$/, async () => {
+      const { config } = settings.current()
       const { latitude, longitude } = config.location
       return resolver.resolve('weather', config.weather.providers, { latitude, longitude, timezone: config.timezone })
     }],
 
-    [/^\/api\/onchain$/, async () => resolver.resolve('onchain', config.onchain.providers, {})],
+    [/^\/api\/onchain$/, async () => resolver.resolve('onchain', settings.current().config.onchain.providers, {})],
 
     [/^\/api\/calendar$/, async (_req, url) => {
+      const { config, googleAuth } = settings.current()
       const profile = url.searchParams.get('profile') ?? 'work'
       calendarFor(config, profile)
-      return resolveCalendar(profile)
+      return resolveCalendar(config, googleAuth, profile)
     }],
 
     [/^\/api\/calendar\/next$/, async () => {
+      const { config, googleAuth } = settings.current()
       const at = now()
       const all = Object.keys(config.calendars)
       // A calendar left empty on purpose is not part of the answer, and its
@@ -111,7 +124,7 @@ export function dataRoutes({ config, resolver, googleAuth, now = Date.now }) {
       const unset = all.map(p => notSetUp(config.calendars[p], googleAuth)).filter(Boolean)
       const profiles = all.filter(p => !notSetUp(config.calendars[p], googleAuth))
       if (!profiles.length) throw new ProvidersUnavailable('calendar', [], unset)
-      const settled = await Promise.allSettled(profiles.map(resolveCalendar))
+      const settled = await Promise.allSettled(profiles.map(p => resolveCalendar(config, googleAuth, p)))
 
       const answered = []
       const causes = []

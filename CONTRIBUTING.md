@@ -16,6 +16,10 @@ The frontend has no build step, but the `web` container copies the files into it
 after editing, run `docker compose up -d --build web`. The backend doesn't reload on its own
 either: `docker compose up -d --build api` after changing its code.
 
+The settings live in the `vitral-data` volume, so `docker compose down -v` starts over from
+the setup wizard. To try the import of an old configuration, put a `config.yaml` in
+`config/` before that first start.
+
 To run the backend outside Docker, set `PORT`. The default internal port is 3100, because
 3000 is contested and may already be taken on your machine.
 

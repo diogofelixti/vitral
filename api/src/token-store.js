@@ -1,4 +1,4 @@
-import { readFile, writeFile, chmod, rename } from 'node:fs/promises'
+import { readFile, writeFile, chmod, rename, rm } from 'node:fs/promises'
 
 /**
  * The Google refresh token, on the api's own volume. The web container
@@ -21,5 +21,7 @@ export function createTokenStore(path = '/data/tokens.json') {
       await chmod(temp, 0o600)
       await rename(temp, path)
     },
+    // Disconnecting, or a new client: the grant belonged to the old one.
+    async clear() { await rm(path, { force: true }) },
   }
 }

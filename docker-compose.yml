@@ -8,9 +8,15 @@ services:
       VITRAL_PORT: ${VITRAL_PORT:-8080}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      # Extra exact host names the api should answer for, beyond an IP, "localhost"
+      # and the local-network names it already trusts. See .env.example.
+      PANEL_HOSTS: ${PANEL_HOSTS:-}
     volumes:
       - vitral-data:/data
-      - ./config.yaml:/app/config.yaml:ro
+      # A config.yaml placed here is imported on first start; afterwards the
+      # settings menu holds the configuration. A directory, not a single file:
+      # a missing file would make Docker create a directory in its place.
+      - ./config:/app/config:ro
     # No ports: entry. The api holds the Google token and must stay
     # unreachable from the host.
     healthcheck:

@@ -1,7 +1,10 @@
-# Vitral configuration.
+# Vitral configuration, by file. Optional: the setup wizard and the settings
+# menu cover everything here.
 #
-# This file is meant to be committed and shared. Never put secrets in it —
-# GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and VITRAL_PORT live only in .env.
+# Copied to config/config.yaml before the first start, it is imported once and
+# the setup is marked done; from then on the settings menu holds the
+# configuration and this file is ignored. Never put secrets in it: the Google
+# credentials go in Settings → Calendars.
 
 language: pt-BR
 timezone: America/Sao_Paulo
@@ -12,8 +15,8 @@ weather: { providers: [open-meteo] }
 onchain: { providers: [mempool] }
 # Both calendars start empty and the panel says so. Fill in one of them:
 #   ics-url: paste the calendar's secret iCal address as `url` (no OAuth).
-#   google:  set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env, then open
-#            http://localhost:8080/auth/google once, on this machine.
+#   google:  save the credentials and connect in Settings → Calendars
+#            (docs/google-calendar.md).
 calendars:
   work:     { provider: google, calendarId: primary, label: { pt-BR: Trabalho, en: Work } }
   personal: { provider: ics-url, label: { pt-BR: Pessoal, en: Personal } }

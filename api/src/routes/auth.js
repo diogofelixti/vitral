@@ -3,7 +3,8 @@ import { RouteError } from './errors.js'
 // Every destination is a constant. Nothing in the query string chooses
 // where the browser goes next, so the flow cannot be turned into an open
 // redirect.
-const PANEL = '/'
+// Back to the settings menu, where the calendar is picked next.
+const PANEL = '/#settings'
 
 function redirect(res, location) {
   res.writeHead(302, { location, 'cache-control': 'no-store' })
@@ -11,8 +12,9 @@ function redirect(res, location) {
   return null
 }
 
-export function authRoutes({ googleAuth }) {
+export function authRoutes({ settings }) {
   const configured = () => {
+    const { googleAuth } = settings.current()
     if (!googleAuth) throw new RouteError(503, 'GOOGLE_NOT_CONFIGURED')
     return googleAuth
   }
