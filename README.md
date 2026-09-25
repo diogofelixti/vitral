@@ -75,7 +75,8 @@ Raspberry Pi, and it keeps itself up to date without anyone touching it.
 - **Docker** with the **Compose** plugin (`docker compose`, not the old `docker-compose`)
 - Any 64-bit machine that runs Docker: the images are the official Node.js and nginx Alpine
   images
-- **Port 8080** free (or any other, set as `VITRAL_PORT` in `.env`)
+- **Port 8080** free (or any other, set as `VITRAL_PORT` in `.env`; see
+  [Port already in use](#port-already-in-use))
 - **Internet access** from that machine, to reach the data sources
 - On the screen, a current browser: Chrome or Edge 105+, Firefox 110+, Safari 16+
 
@@ -159,6 +160,35 @@ down -v` deletes them, and the next start opens the setup again.
 Updating an install that has a `config.yaml` in the project root? Move it before the first
 start of the new version, with `mkdir -p config && mv config.yaml config/`, and it is imported
 once like any other; left in the root, it is no longer read and the panel opens the setup.
+
+### Port already in use
+
+If something else on the machine already serves on 8080, the start stops with:
+
+```
+Bind for 0.0.0.0:8080 failed: port is already allocated
+```
+
+Find out who holds it, a container or another program:
+
+```bash
+docker ps --filter publish=8080
+sudo ss -ltnp 'sport = :8080'     # Linux; on macOS: lsof -iTCP:8080 -sTCP:LISTEN
+```
+
+Either stop that, or give Vitral another port in a `.env` next to `docker-compose.yml`:
+
+```bash
+echo "VITRAL_PORT=8081" >> .env
+```
+
+Then start it again from scratch, since the failed attempt leaves a container behind with no
+network: `docker compose down && docker compose up -d`. The panel is now at
+`http://localhost:8081`. The `api` publishes no port, so it never collides with anything.
+
+With Google Calendar connected, the redirect address follows the port: add the new
+`http://localhost:8081/auth/google/callback` to your OAuth client
+([docs/google-calendar.md](docs/google-calendar.md)).
 
 ### Kiosk mode
 
