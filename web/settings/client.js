@@ -15,8 +15,8 @@ export const settingsApi = {
   save: config => call('PUT', '/api/settings', config),
   finishSetup: () => call('POST', '/api/settings/setup-done', {}),
   saveGoogle: credentials => call('POST', '/api/settings/google', credentials),
-  disconnectGoogle: () => call('DELETE', '/api/settings/google', {}),
-  googleCalendars: () => call('GET', '/api/settings/google/calendars'),
+  disconnectGoogle: profile => call('DELETE', '/api/settings/google', { profile }),
+  googleCalendars: profile => call('GET', `/api/settings/google/calendars?profile=${encodeURIComponent(profile)}`),
   // A url tests a new address; a profile tests the stored one, which the menu never sees.
   testCalendar: target => call('POST', '/api/settings/test-calendar', target.startsWith?.('https://') ? { url: target } : { profile: target }),
   geocode: (query, language) => call('GET', `/api/settings/geocode?q=${encodeURIComponent(query)}&lang=${language === 'en' ? 'en' : 'pt-BR'}`),

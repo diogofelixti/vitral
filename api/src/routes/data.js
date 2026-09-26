@@ -36,9 +36,11 @@ function pairsFrom(url, config) {
  * the owner's today and not the container's. The label stays out: it is
  * for the screen, and would only split the cache key.
  */
-function calendarParams(calendar, config) {
+function calendarParams(calendar, config, profile) {
   const params = { timezone: config.timezone }
-  if (calendar.provider === 'google') params.calendarId = calendar.calendarId
+  // The account is part of the cache key too: "primary" in one account is
+  // not "primary" in the other.
+  if (calendar.provider === 'google') Object.assign(params, { calendarId: calendar.calendarId, account: profile })
   if (calendar.provider === 'ics-url') params.url = calendar.url
   return params
 }
@@ -77,7 +79,7 @@ export function dataRoutes({ settings, resolver, now = Date.now }) {
     const calendar = config.calendars[profile]
     const missing = notSetUp(calendar, googleAuth)
     if (missing) return Promise.reject(new ProvidersUnavailable('calendar', [], [missing]))
-    return resolver.resolve('calendar', [calendar.provider], calendarParams(calendar, config))
+    return resolver.resolve('calendar', [calendar.provider], calendarParams(calendar, config, profile))
       .then(envelope => {
         if (calendar.provider === 'google' && !envelope.stale) settings.markGoogleSync?.(envelope.updatedAt)
         return envelope
@@ -147,13 +149,17 @@ export function dataRoutes({ settings, resolver, now = Date.now }) {
       const upcoming = answered
         .flatMap(({ profile, envelope }) => envelope.data.events
           .filter(e => !e.allDay)
-          .map(e => ({ ...e, profileLabel: config.calendars[profile].label })))
+          .map(e => ({ ...e, profile, profileLabel: config.calendars[profile].label })))
         .filter(e => Date.parse(e.end) > at && Date.parse(e.start) < endOfToday)
         .sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
 
       const envelopes = answered.map(a => a.envelope)
       return {
-        data: { next: upcoming[0] ?? null, busy: upcoming.some(e => Date.parse(e.start) <= at) },
+        // `events` is the rest of today, not just the first: the answer can be
+        // minutes old when the panel reads it, and the panel shows the next event
+        // of each calendar, so a long one underway in one calendar does not hide
+        // the meeting coming up in the other.
+        data: { next: upcoming[0] ?? null, events: upcoming, busy: upcoming.some(e => Date.parse(e.start) <= at) },
         // As old as the oldest calendar it was built from: that is the age
         // of the claim "nothing else today".
         updatedAt: envelopes.map(e => e.updatedAt).sort()[0],

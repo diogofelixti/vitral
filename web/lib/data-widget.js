@@ -17,8 +17,13 @@ export class DataWidget extends Widget {
     })
     clearInterval(this.timer)
     this.timer = setInterval(() => {
-      if (this.meta?.stale || this.constructor.capability === 'next') this.draw()
+      if (this.meta?.stale || this.constructor.capability === 'next' || this.outdated?.()) this.draw()
     }, 15_000)
+  }
+  // the answer can be minutes old (cache, stale), and a calendar is read from midnight on:
+  // an event that has already ended is past, whatever the api said when it was fetched
+  ended(event, at = Date.now()) {
+    return event.allDay ? event.end.slice(0, 10) <= this.i18n.dayKey(at) : Date.parse(event.end) <= at
   }
   disconnectedCallback() { this.stop?.(); clearInterval(this.timer) }
   setLanguage(i18n) { this.i18n = i18n; this.draw() }

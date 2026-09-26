@@ -119,6 +119,23 @@ with no restart.
 | `L` | Portuguese / English |
 | `F` | full screen |
 
+### Installing with an AI agent
+
+If you use a coding agent in the terminal (Claude Code, Codex, Gemini CLI, Cursor and the
+like), paste this prompt into it on the machine that will run the panel:
+
+```text
+Install Vitral on this machine from https://github.com/diogofelixti/vitral.
+Clone it, then follow AGENTS.md in the repository step by step, checking each step before
+the next. Ask me before installing anything or replacing an existing install. Never ask me
+for passwords, calendar addresses or Google secrets: tell me where to enter them in the
+panel's settings instead. When it is running, give me the address to open.
+```
+
+The agent reads [AGENTS.md](AGENTS.md), which covers the requirements, port conflicts, an
+existing install, the checks that prove the panel is up, and what only you can do (the
+calendars and Google's consent). It also carries the rules for an agent changing the code.
+
 ### Calendars
 
 Both calendars start empty and say so. The simplest way to fill one is your calendar's
@@ -130,8 +147,9 @@ to see it read before you save.
   <img src="docs/screenshots/settings.png" alt="The Calendars section of the settings" width="700">
 </p>
 
-To use the Google Calendar API instead, the same section walks you through it; the details
-are in [docs/google-calendar.md](docs/google-calendar.md).
+To use the Google Calendar API instead, the same section walks you through it. Each calendar
+connects its own Google account, so Work and Personal can come from different accounts. The
+details are in [docs/google-calendar.md](docs/google-calendar.md).
 
 ### Configure by file (optional)
 
@@ -252,6 +270,7 @@ A new theme is one CSS file, with no build step and no JavaScript: see
 - 🔌 [**Data sources**](docs/providers.md) — what each source covers, fallback, and how to add one
 - 🎨 [**Themes**](docs/themes.md) — the theme contract, the grid and the rules
 - 🤝 [**Contributing**](CONTRIBUTING.md) — development setup and guidelines
+- 🤖 [**AGENTS.md**](AGENTS.md) — instructions for AI coding agents that install, update or change Vitral
 
 <br>
 

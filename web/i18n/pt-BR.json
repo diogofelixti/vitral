@@ -129,7 +129,10 @@
   "google": {
     "intro": "O Vitral lê a sua agenda com permissão somente de leitura.",
     "notConfigured": "Ainda sem credenciais do Google.",
-    "notConnected": "Credenciais salvas. Falta conectar a conta.",
+    "notConnected": "Nenhuma conta conectada a esta agenda.",
+    "accountsIntro": "Credenciais salvas. Cada agenda conecta a própria conta Google, que pode ser outra.",
+    "noneUsesGoogle": "Nenhuma agenda está usando o Google Agenda. Escolha Google Agenda numa agenda acima para conectá-la.",
+    "calendar": "Agenda da conta",
     "connected": "Conectado. Última sincronização: {at}",
     "steps": {
       "1": "Abra console.cloud.google.com e crie um projeto (o nome não importa).",

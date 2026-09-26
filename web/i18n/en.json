@@ -129,7 +129,10 @@
   "google": {
     "intro": "Vitral reads your calendar with read-only access.",
     "notConfigured": "No Google credentials yet.",
-    "notConnected": "Credentials saved. The account still needs connecting.",
+    "notConnected": "No account connected to this calendar yet.",
+    "accountsIntro": "Credentials saved. Each calendar connects its own Google account, which may be a different one.",
+    "noneUsesGoogle": "No calendar uses Google Calendar. Pick Google Calendar on a calendar above to connect it.",
+    "calendar": "Calendar in this account",
     "connected": "Connected. Last sync: {at}",
     "steps": {
       "1": "Open console.cloud.google.com and create a project (the name does not matter).",

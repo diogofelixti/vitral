@@ -7,13 +7,17 @@ export class Agenda extends DataWidget {
     const profile = this.getAttribute('profile') ?? 'work'
     return this.i18n.label(this.config.calendars?.[profile]?.label) || this.i18n.t(`widgets.${profile}`)
   }
+  // redrawn only when an event on screen has ended since, not on every tick
+  outdated() { return Boolean(this.data) && this.data.events.filter(event => !this.ended(event)).length !== this.shown }
   render(data) {
-    if (!data.events.length) { this.append(this.text('sub empty', this.i18n.t('calendar.empty'))); return }
+    const events = data.events.filter(event => !this.ended(event))
+    this.shown = events.length
+    if (!events.length) { this.append(this.text('sub empty', this.i18n.t('calendar.empty'))); return }
     const today = this.i18n.dayKey(Date.now())
     const tomorrow = new Date(Date.parse(today + 'T00:00:00Z') + 86_400_000).toISOString().slice(0, 10)
     const rows = this.text('rows', '')
     let previousDay
-    for (const [index, event] of data.events.entries()) {
+    for (const event of events) {
       const day = event.allDay ? event.start.slice(0, 10) : this.i18n.dayKey(event.start)
       if (day !== previousDay && day !== today) {
         rows.append(this.text('sub day', day === today ? this.i18n.t('calendar.today') : day === tomorrow ? this.i18n.t('calendar.tomorrow') : this.i18n.date(event.start)))

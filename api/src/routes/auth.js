@@ -1,4 +1,5 @@
 import { RouteError } from './errors.js'
+import { PROFILES } from '../auth/google.js'
 
 // Every destination is a constant. Nothing in the query string chooses
 // where the browser goes next, so the flow cannot be turned into an open
@@ -19,7 +20,14 @@ export function authRoutes({ settings }) {
     return googleAuth
   }
   return [
-    [/^\/auth\/google$/, async (_req, _url, _m, res) => redirect(res, configured().authUrl())],
+    // Which calendar the account is for travels in the state, never back
+    // out as a destination.
+    [/^\/auth\/google$/, async (_req, url, _m, res) => {
+      const auth = configured()
+      const profile = url.searchParams.get('profile')
+      if (!PROFILES.includes(profile)) throw new RouteError(400, 'UNKNOWN_PROFILE')
+      return redirect(res, auth.authUrl(profile))
+    }],
     [/^\/auth\/google\/callback$/, async (_req, url, _m, res) => {
       await configured().handleCallback({
         code: url.searchParams.get('code') ?? undefined,

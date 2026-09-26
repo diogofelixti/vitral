@@ -35,38 +35,57 @@ export function googlePanel({ i18n, view, draft }) {
     h('p', { class: 'form-error', role: 'alert' }),
     h('button', { type: 'submit', text: i18n.t('google.saveCredentials') }))
 
-  // Always in view, as the guide's last step; until there are credentials the link would only reach an error.
-  const connect = isLocalPanel()
-    ? h('div', { class: 'google-connect' },
-        h('a', { href: '/auth/google', class: 'settings-primary', text: i18n.t(google.connected ? 'google.reconnect' : 'google.connect'),
-          ...(!google.configured && { 'aria-disabled': 'true', onclick: event => event.preventDefault() }) }),
-        !google.configured && h('p', { class: 'field-hint', text: i18n.t('google.needsCredentials') }))
-    : h('div', { class: 'google-connect' }, h('p', { class: 'field-hint', text: i18n.t('google.remote') }),
-        h('code', { class: 'settings-code google-tunnel', text: `ssh -L ${port}:localhost:${port} ${i18n.t('google.user')}@${location.hostname}` }))
-
-  const status = h('p', { class: 'google-status', text: google.connected
-    ? i18n.t('google.connected', { at: google.lastSyncAt ? i18n.time(google.lastSyncAt) : '—' })
-    : google.configured ? i18n.t('google.notConnected') : i18n.t('google.notConfigured') })
-
+  const status = h('p', { class: 'google-status', text: google.configured ? i18n.t('google.accountsIntro') : i18n.t('google.notConfigured') })
   root.append(h('p', { text: i18n.t('google.intro') }), status)
   if (!google.configured) root.append(guide, credentials)
   else root.append(h('details', {}, h('summary', { text: i18n.t('google.changeCredentials') }), guide, credentials))
-  root.append(connect)
 
-  if (google.connected) {
-    const pickers = h('div', { class: 'google-pickers' })
-    root.append(pickers, h('button', { type: 'button', text: i18n.t('google.disconnect'), onclick: async () => {
-      await settingsApi.disconnectGoogle(); location.hash = 'settings'; location.reload()
-    } }))
-    void settingsApi.googleCalendars().then(answer => {
-      if (!answer.ok) { pickers.append(h('p', { class: 'form-error', text: i18n.t(`errors.${answer.data?.error ?? 'NETWORK_ERROR'}`) })); return }
-      for (const profile of ['work', 'personal']) {
-        if (draft.calendars[profile].provider !== 'google') continue
-        const select = h('select', { 'data-profile-calendar': profile, onchange: e => { draft.calendars[profile].calendarId = e.target.value } },
-          ...answer.data.calendars.map(c => h('option', { value: c.id, selected: c.id === draft.calendars[profile].calendarId || (c.primary && draft.calendars[profile].calendarId === 'primary'), text: c.name })))
-        pickers.append(field({ label: i18n.label(draft.calendars[profile].label), path: `calendars.${profile}.calendarId`, input: select }))
-      }
-    })
+  // Each calendar connects its own account: work and personal are often two.
+  const profiles = ['work', 'personal'].filter(p => draft.calendars[p].provider === 'google')
+  if (!profiles.length) root.append(h('p', { class: 'field-hint', text: i18n.t('google.noneUsesGoogle') }))
+  if (profiles.length && !isLocalPanel()) {
+    root.append(h('div', { class: 'google-connect' }, h('p', { class: 'field-hint', text: i18n.t('google.remote') }),
+      h('code', { class: 'settings-code google-tunnel', text: `ssh -L ${port}:localhost:${port} ${i18n.t('google.user')}@${location.hostname}` })))
   }
+  for (const profile of profiles) root.append(account(profile))
   return root
+
+  function account(profile) {
+    const connected = Boolean(google.accounts?.[profile]?.connected)
+    const box = h('div', { class: 'google-account', 'data-profile': profile },
+      h('h4', { text: i18n.label(draft.calendars[profile].label) }),
+      h('p', { class: 'google-status', text: connected
+        ? i18n.t('google.connected', { at: google.lastSyncAt ? i18n.time(google.lastSyncAt) : '—' })
+        : google.configured ? i18n.t('google.notConnected') : i18n.t('google.needsCredentials') }))
+    const error = h('p', { class: 'form-error', role: 'alert' })
+    if (isLocalPanel()) {
+      // Google sends the browser away and back: the choices made so far are
+      // saved first, or the calendar just switched to Google would come back
+      // as it was, with nothing to attach the account to.
+      const href = `/auth/google?profile=${profile}`
+      box.append(h('a', { href, class: 'settings-primary google-connect',
+        text: i18n.t(connected ? 'google.reconnect' : 'google.connect'),
+        ...(!google.configured && { 'aria-disabled': 'true' }),
+        onclick: async event => {
+          event.preventDefault()
+          if (!google.configured) return
+          const saved = await settingsApi.save(draft)
+          if (!saved.ok) { error.textContent = i18n.t(`errors.${saved.data?.error ?? 'INTERNAL_ERROR'}`); return }
+          location.href = href
+        } }))
+    }
+    box.append(error)
+    if (!connected) return box
+    const picker = h('div', { class: 'google-pickers' })
+    box.append(picker, h('button', { type: 'button', text: i18n.t('google.disconnect'), onclick: async () => {
+      await settingsApi.disconnectGoogle(profile); location.hash = 'settings'; location.reload()
+    } }))
+    void settingsApi.googleCalendars(profile).then(answer => {
+      if (!answer.ok) { picker.append(h('p', { class: 'form-error', text: i18n.t(`errors.${answer.data?.error ?? 'NETWORK_ERROR'}`) })); return }
+      const select = h('select', { 'data-profile-calendar': profile, onchange: e => { draft.calendars[profile].calendarId = e.target.value } },
+        ...answer.data.calendars.map(c => h('option', { value: c.id, selected: c.id === draft.calendars[profile].calendarId || (c.primary && draft.calendars[profile].calendarId === 'primary'), text: c.name })))
+      picker.append(field({ label: i18n.t('google.calendar'), path: `calendars.${profile}.calendarId`, input: select }))
+    })
+    return box
+  }
 }

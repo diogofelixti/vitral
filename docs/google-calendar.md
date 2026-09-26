@@ -14,6 +14,9 @@ read-only access (`calendar.readonly`) and never writes to your calendar. Each i
 its own OAuth client, which you create once in Google's console; everything else happens in
 **Settings → Calendars → Google Calendar**, which shows these same steps.
 
+Each calendar connects its **own Google account**. Work can be your company account and
+Personal your Gmail, with one OAuth client for both.
+
 ## 1. Create the OAuth client ID
 
 1. Open the [Google Cloud Console](https://console.cloud.google.com/) and create a project
@@ -43,11 +46,19 @@ shown again; to replace it, open **Change credentials**.
 An existing install that had `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `.env` loses
 nothing: they are imported once, on the first start of this version.
 
-## 3. Connect
+## 3. Connect each calendar
 
-Press **Connect**, sign in with the account and accept. Google sends you back to the panel,
-and the api keeps the refresh token in the `vitral-data` volume. From then on it renews
+Set **Work** or **Personal** (or both) to **Google Calendar**. Each one gets its own box with a
+**Connect** button. Press it, pick the account for that calendar and accept. Google always
+shows the account chooser, so the second calendar can use a different account from the
+first. Connect saves your choices in the menu first, then Google sends you back to the
+panel. The api keeps one refresh token per calendar in the `vitral-data` volume and renews
 access by itself.
+
+**Disconnect** in a calendar's box drops only that calendar's account.
+
+An install from before calendars had their own accounts keeps working: its single
+connection serves both calendars until you connect one of them again.
 
 Google only accepts a plain `http` redirect to `localhost`, so consent has to happen **on
 the machine running the panel**. Opened from any other device, the settings show a tunnel
@@ -60,8 +71,8 @@ ssh -L 8080:localhost:8080 <user>@<panel-machine>
 
 ## 4. Pick the calendars
 
-Set **Work** or **Personal** (or both) to **Google Calendar**. Once connected, each one gets a
-list of the account's calendars by name; the main one is preselected. Press **Save**.
+Once connected, each box lists the calendars of its account by name, with the main one
+preselected. Press **Save**.
 
 ## The 7-day token
 
@@ -87,3 +98,4 @@ Or, again, use an iCal address, which has no token at all.
 | `redirect_uri_mismatch` on Google's page | The URI registered in the Console doesn't match the one the settings show | Copy it from the settings into the Console again |
 | No Connect button, a tunnel command instead | The settings are open on another device | Run the tunnel, or open the settings on the panel machine |
 | The account's calendars don't list | The connection dropped | Connect again, then pick them |
+| Both calendars show the same events | Both are connected to the same account | Press **Connect** in the other calendar's box and pick the other account |

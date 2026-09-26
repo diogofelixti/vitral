@@ -37,11 +37,10 @@ export function createSettingsService({ store, boot, cache, ctx, tokenStore, red
       if (previous?.clientId !== clientId) await tokenStore.clear()
       return commit({ google, googleAuth: buildAuth(google) })
     },
-    async disconnectGoogle() {
-      await tokenStore.clear()
-      const { google } = holder.current()
-      // A fresh auth, so no access token cached in memory outlives the grant.
-      return commit({ googleAuth: buildAuth(google) })
+    // One calendar's account; the other calendar keeps its own.
+    async disconnectGoogle(profile) {
+      await holder.current().googleAuth?.forget(profile)
+      return commit({})
     },
   }
 }

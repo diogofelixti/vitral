@@ -112,10 +112,20 @@ export async function bootstrap() {
   // A save from the settings menu, on this screen or any other, bumps the
   // revision; every open screen notices within 30 s and starts over with it.
   const revision = config.revision
+  // An update to the panel itself changes version.txt, written when the image is built; a
+  // screen left on for weeks picks the new code up by itself. Not while a dialog is open:
+  // a reload would throw away what the person is typing, and the next check comes soon.
+  const readVersion = async () => {
+    const response = await fetch('/version.txt', { cache: 'no-store', signal: AbortSignal.timeout(5000) })
+    return response.ok ? (await response.text()).trim() : null
+  }
+  const version = await readVersion().catch(() => null)
   const followRevision = async () => {
     try {
       const response = await fetch('/api/config', { cache: 'no-store', signal: AbortSignal.timeout(5000) })
-      if (response.ok && (await response.json()).revision !== revision) location.reload()
+      if (response.ok && (await response.json()).revision !== revision) { location.reload(); return }
+      const current = version && await readVersion()
+      if (current && current !== version && !document.querySelector('#vitral-settings, #vitral-setup')) location.reload()
     } catch { /* offline: the panel keeps showing what it has */ }
   }
   setInterval(followRevision, 30_000)

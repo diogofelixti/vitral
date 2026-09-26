@@ -12,7 +12,7 @@ export default {
   capability: 'calendar',
   ttl: 300,
 
-  async fetch({ calendarId, timezone, window }, { http, googleAuth }) {
+  async fetch({ calendarId, account, timezone, window }, { http, googleAuth }) {
     if (!googleAuth) throw new GoogleNotConfigured('google: GOOGLE_CLIENT_ID is not set')
     if (!calendarId) throw new CalendarNotConfigured('google: this calendar has no calendarId configured')
     // encodeURIComponent leaves "." and ".." alone, and the URL parser
@@ -21,7 +21,9 @@ export default {
       throw new Error('google: this calendar has no usable calendarId configured')
     }
     const { from, to } = window ?? defaultWindow(timezone)
-    const token = await googleAuth.accessToken()
+    // `account` is the calendar the grant belongs to: each may be connected
+    // to a different Google account.
+    const token = await googleAuth.accessToken(account)
 
     const url = new URL(`${BASE}/${encodeURIComponent(calendarId)}/events`)
     url.search = new URLSearchParams({
@@ -53,9 +55,9 @@ export default {
   async capabilities() { return { needsOAuth: true, recurring: true } },
 
   // For the settings menu, to pick a calendar by name instead of pasting an id.
-  async listCalendars({ http, googleAuth }) {
+  async listCalendars({ http, googleAuth, account }) {
     if (!googleAuth) throw new GoogleNotConfigured('google: GOOGLE_CLIENT_ID is not set')
-    const token = await googleAuth.accessToken()
+    const token = await googleAuth.accessToken(account)
     const url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList?minAccessRole=reader'
     const body = (await http(url, { headers: { authorization: `Bearer ${token}` } })).json()
     return {

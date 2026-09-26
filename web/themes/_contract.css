@@ -34,6 +34,13 @@ body { margin: 0; min-height: 100%; font-family: var(--font-body, monospace); ov
 .lab.with-age .stale { flex: none; text-transform: none; letter-spacing: .02em; }
 /* never squeezed to a part-line: when the cell is short, the optional lines give way instead */
 .next-title { flex-shrink: 0; display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 2; -webkit-box-orient: vertical; white-space: normal; line-height: 1.2; max-height: calc(2 * 1.2em); font-size: calc(var(--size-val) * .7 * var(--fit-scale, 1)); }
+/* one per calendar; a short cell takes one-line titles, then the later ones in a line each */
+.several .status-line + .next-title, .several .status-line + .next-brief { margin-top: .9cqw; }
+.tight .next-title { -webkit-line-clamp: 1; max-height: 1.2em; margin-block: .15cqw; }
+.several .status-line + .next-brief { margin-top: .25cqw; }
+.next-brief { display: flex; gap: .45em; white-space: nowrap; flex-shrink: 0; font-size: calc(var(--size-sub) * .85); line-height: 1.25; }
+.next-brief[hidden], .next-later[hidden] { display: none; }
+.next-brief .event-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; color: var(--fg); }
 .rows { display: grid; gap: .35cqw; }
 .ev { display: grid; grid-template-columns: auto 1fr; gap: 1.1cqw; align-items: baseline; }
 .event-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

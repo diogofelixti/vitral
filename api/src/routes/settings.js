@@ -2,7 +2,7 @@ import { RouteError, FieldErrors } from './errors.js'
 import { assertJsonWrite, readJson } from '../security/write-guard.js'
 import { validateConfig, providerErrors } from '../settings/schema.js'
 import { BlockedUrl } from '../security/ssrf-guard.js'
-import { NotAuthenticated } from '../auth/google.js'
+import { NotAuthenticated, PROFILES } from '../auth/google.js'
 
 const toJson = value => JSON.parse(JSON.stringify(value))
 
@@ -86,10 +86,17 @@ export function settingsRoutes({ settings, service, registry, resolver, ctx = {}
         configured: Boolean(state.google),
         clientId: state.google?.clientId ?? '',
         redirectUri: service?.redirectUri ?? '',
-        connected: state.googleAuth ? await state.googleAuth.hasGrant() : false,
+        // Each calendar connects its own account.
+        accounts: Object.fromEntries(await Promise.all(PROFILES.map(async p =>
+          [p, { connected: state.googleAuth ? await state.googleAuth.hasGrant(p) : false }]))),
         lastSyncAt: state.lastGoogleSyncAt,
       },
     }
+  }
+
+  const profileOf = value => {
+    if (!PROFILES.includes(value)) throw new RouteError(400, 'UNKNOWN_PROFILE')
+    return value
   }
 
   async function writeBody(req) {
@@ -116,8 +123,8 @@ export function settingsRoutes({ settings, service, registry, resolver, ctx = {}
 
     [/^\/api\/settings\/google$/, async (req, _url, _match, res) => {
       if (req.method === 'DELETE') {
-        await writeBody(req)
-        await needService().disconnectGoogle()
+        const body = await writeBody(req)
+        await needService().disconnectGoogle(profileOf(body?.profile))
         res.writeHead(204, { 'cache-control': 'no-store' })
         res.end()
         return null
@@ -151,12 +158,13 @@ export function settingsRoutes({ settings, service, registry, resolver, ctx = {}
       }
     }],
 
-    [/^\/api\/settings\/google\/calendars$/, async req => {
+    [/^\/api\/settings\/google\/calendars$/, async (req, url) => {
       if (req.method !== 'GET') throw new RouteError(405, 'METHOD_NOT_ALLOWED')
+      const account = profileOf(url.searchParams.get('profile'))
       const { googleAuth } = settings.current()
       if (!googleAuth) throw new RouteError(503, 'GOOGLE_NOT_CONFIGURED')
       try {
-        return await registry.get('calendar', 'google').listCalendars({ ...ctx, googleAuth })
+        return await registry.get('calendar', 'google').listCalendars({ ...ctx, googleAuth, account })
       } catch (err) {
         if (err instanceof NotAuthenticated) throw new RouteError(503, 'GOOGLE_REAUTH_REQUIRED')
         throw err
