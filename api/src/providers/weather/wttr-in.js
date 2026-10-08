@@ -1,3 +1,5 @@
+import { place } from './lib/place.js'
+
 /** wttr.in gives "06:12 AM"; the normal form is 24h HH:MM. */
 function to24h(value) {
   const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(value?.trim() ?? '')
@@ -30,6 +32,7 @@ export default {
   id: 'wttr-in',
   capability: 'weather',
   ttl: 900,
+  page: ({ latitude, longitude }) => place(latitude, longitude) && `https://wttr.in/${place(latitude, longitude)}`,
 
   // `now` is a seam, not a feature: it lets tests pin the instant
   // deterministically (see resolve.js's own `now = Date.now`) instead of

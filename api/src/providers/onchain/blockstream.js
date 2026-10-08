@@ -6,6 +6,7 @@ export default {
   id: 'blockstream',
   capability: 'onchain',
   ttl: 60,
+  page: () => 'https://blockstream.info/',
 
   async fetch(_params, { http }) {
     // Same shape as mempool's height call: a bare integer served as

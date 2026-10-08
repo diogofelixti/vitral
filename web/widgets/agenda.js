@@ -23,7 +23,7 @@ export class Agenda extends DataWidget {
         rows.append(this.text('sub day', day === today ? this.i18n.t('calendar.today') : day === tomorrow ? this.i18n.t('calendar.tomorrow') : this.i18n.date(event.start)))
         previousDay = day
       }
-      const row = this.text('ev', '')
+      const row = this.linkTo(this.text('ev', ''), event.link)
       const time = document.createElement('time')
       time.dateTime = event.start
       time.textContent = event.allDay ? this.i18n.t('calendar.allDay') : this.i18n.time(event.start)

@@ -19,7 +19,7 @@ export class NextEvent extends DataWidget {
     if (!shown.length) { this.append(this.text('val next-title', this.i18n.t('next.none')), this.text('sub', this.i18n.t(data.busy ? 'next.busy' : 'next.free'))); return }
     for (const [index, event] of shown.entries()) {
       const remaining = Math.ceil((Date.parse(event.start) - at) / 60_000)
-      const title = this.text('val next-title', event.title)
+      const title = this.linkTo(this.text('val next-title', event.title), event.link)
       title.title = event.title
       const status = this.text('sub status-line', '')
       status.append(this.inline('countdown', underway(event) ? this.i18n.t('next.now') : remaining > 0 ? this.i18n.t('next.in', { duration: this.i18n.t('next.duration', { n: this.i18n.number(remaining) }) }) : this.i18n.t('next.none')), this.separator(), this.inline('start-time', this.i18n.time(event.start)))
@@ -29,7 +29,7 @@ export class NextEvent extends DataWidget {
       if (index === 0) { this.append(title, status); continue }
       title.classList.add('next-later'); status.classList.add('next-later')
       // the same event in one line, for a cell too short for two in full
-      const brief = this.text('sub next-brief', '')
+      const brief = this.linkTo(this.text('sub next-brief', ''), event.link)
       brief.hidden = true
       brief.append(this.inline('start-time', this.i18n.time(event.start)), this.inline('dot', '·'), this.inline('event-title', event.title))
       if (event.profileLabel) brief.append(this.inline('dot', '·'), this.inline('profile-label', this.i18n.label(event.profileLabel)))

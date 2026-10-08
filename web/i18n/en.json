@@ -34,8 +34,7 @@
   "countdown": {
     "none": "no dates set",
     "days": "days left",
-    "today": "today",
-    "past": "days ago"
+    "today": "today"
   },
   "age": {
     "seconds": "{n} s ago",

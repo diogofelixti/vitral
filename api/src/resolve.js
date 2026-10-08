@@ -39,6 +39,9 @@ export function createResolver({ registry, cache, now = Date.now, ctx = {} }) {
     const key = via === 'fetch'
       ? `${capability}:${JSON.stringify(params)}`
       : `${capability}:${via}:${JSON.stringify(params)}`
+    // Where the person can see this reading for themselves, from whichever
+    // provider gave it: the panel opens it when the widget is clicked.
+    const link = id => (via === 'fetch' && registry.get(capability, id)?.page?.(params)) || null
     const hit = cache.get(key)
     if (hit?.fresh) {
       const known = provenance.get(key)
@@ -46,6 +49,7 @@ export function createResolver({ registry, cache, now = Date.now, ctx = {} }) {
         data: hit.value,
         updatedAt: hit.updatedAt,
         provider: known?.id ?? providerIds[0],
+        link: link(known?.id ?? providerIds[0]),
         stale: false,
         degraded: known?.degraded ?? false,
       }
@@ -66,6 +70,7 @@ export function createResolver({ registry, cache, now = Date.now, ctx = {} }) {
           data,
           updatedAt: new Date(now()).toISOString(),
           provider: id,
+          link: link(id),
           stale: false,
           degraded,
         }
@@ -92,6 +97,7 @@ export function createResolver({ registry, cache, now = Date.now, ctx = {} }) {
         data: stale.value,
         updatedAt: stale.updatedAt,
         provider: known?.id ?? providerIds[0],
+        link: link(known?.id ?? providerIds[0]),
         stale: true,
         degraded: true,
       }

@@ -14,7 +14,7 @@ export function poll(path, seconds, onData) {
       const body = await response.json()
       if (response.ok) {
         data = body.data
-        meta = { updatedAt: body.updatedAt, provider: body.provider, stale: body.stale, degraded: body.degraded }
+        meta = { updatedAt: body.updatedAt, provider: body.provider, link: body.link, stale: body.stale, degraded: body.degraded }
       } else meta = { error: body.error ?? 'INTERNAL_ERROR' }
     } catch { meta = { error: 'NETWORK_ERROR' } }
     finally { clearTimeout(timeout); running = false }

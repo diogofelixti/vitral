@@ -4,6 +4,7 @@ export default {
   id: 'coinbase',
   capability: 'bitcoin',
   ttl: 60,
+  page: () => 'https://www.coinbase.com/price/bitcoin',
 
   async fetch({ currencies }, { http }) {
     const body = (await http(`${BASE}/exchange-rates?currency=BTC`)).json()

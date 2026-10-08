@@ -6,6 +6,7 @@ export default {
   id: 'mempool',
   capability: 'onchain',
   ttl: 60,
+  page: () => 'https://mempool.space/',
 
   async fetch(_params, { http }) {
     // The tip-height endpoint answers a bare integer as text/plain, not

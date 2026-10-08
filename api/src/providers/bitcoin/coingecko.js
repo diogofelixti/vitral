@@ -4,6 +4,7 @@ export default {
   id: 'coingecko',
   capability: 'bitcoin',
   ttl: 60,
+  page: () => 'https://www.coingecko.com/en/coins/bitcoin',
 
   async fetch({ currencies }, { http }) {
     const vs = currencies.join(',')

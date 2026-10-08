@@ -31,6 +31,8 @@ export class DataWidget extends Widget {
   draw() {
     this.dataset.rendered = 'false'
     this.clear()
+    this.unlink(this)
+    this.setAttribute('role', 'group')
     const label = this.text(this.constructor.capability === 'weather' ? 'lab location' : 'lab', this.label)
     if (this.constructor.capability === 'weather' && this.label.length > 24) label.title = this.label
     this.append(label)
@@ -46,6 +48,7 @@ export class DataWidget extends Widget {
       return
     }
     this.render(this.data, this.meta)
+    if (this.data && this.meta?.link) this.linkTo(this, this.meta.link)
     // the age of a stale reading rides on the label line, which always has room across and
     // costs no height; at the end of a support line it pushed the line onto a second row that
     // the narrow cells could not hold

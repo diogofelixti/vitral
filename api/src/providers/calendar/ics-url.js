@@ -1,6 +1,7 @@
 import ical from 'node-ical'
 import { assertFetchable } from '../../security/ssrf-guard.js'
 import { CalendarNotConfigured } from './lib/not-configured.js'
+import { safeLink } from './lib/link.js'
 
 // Constructing an Intl.DateTimeFormat is by far the most expensive thing
 // in this file, and expanding a single recurring occurrence needs several
@@ -387,9 +388,9 @@ export function expandRecurring(e, from, to) {
         // Composite id: an override shares its master's UID (RFC 5545),
         // so without this every occurrence of a series -- moved ones
         // included -- would report the exact same `id`.
-        return { uid: `${override.uid}#${oStart.toISOString()}`, summary: override.summary, allDay: overrideAllDay, start: oStart, end: oEnd }
+        return { uid: `${override.uid}#${oStart.toISOString()}`, summary: override.summary, url: override.url ?? e.url, allDay: overrideAllDay, start: oStart, end: oEnd }
       }
-      return { uid: `${e.uid}#${start.toISOString()}`, summary: e.summary, allDay, start, end: new Date(start.getTime() + durationMs) }
+      return { uid: `${e.uid}#${start.toISOString()}`, summary: e.summary, url: e.url, allDay, start, end: new Date(start.getTime() + durationMs) }
     })
     // The exact [from, to) trim, on each occurrence's real start/end --
     // not the widened searchFrom probe above. Applied here, inside the
@@ -521,6 +522,22 @@ function dropReason(e, err) {
   return `recurring event ${e.uid ?? '(no uid)'} could not be expanded: ${err.message}`
 }
 
+/**
+ * A Google Calendar feed carries no link to each event, but its secret address
+ * says it is Google's: the event's day in Google Calendar is the next best place
+ * to open. Built from the event's date alone -- the feed's address is a secret
+ * and must never reach the browser. The day is the panel's, like the window's.
+ */
+function googleDay(feedUrl, event, timezone = 'UTC') {
+  let feed
+  try { feed = new URL(feedUrl) } catch { return null }
+  if (feed.hostname !== 'calendar.google.com' || !feed.pathname.startsWith('/calendar/ical/')) return null
+  const day = event.allDay
+    ? { year: event.start.getUTCFullYear(), month: event.start.getUTCMonth() + 1, day: event.start.getUTCDate() }
+    : partsInZone(event.start, timezone, { year: 'numeric', month: 'numeric', day: 'numeric' })
+  return `https://calendar.google.com/calendar/r/day/${Number(day.year)}/${Number(day.month)}/${Number(day.day)}`
+}
+
 export default {
   id: 'ics-url',
   capability: 'calendar',
@@ -556,6 +573,7 @@ export default {
       return {
         uid: e.uid,
         summary: e.summary,
+        url: e.url,
         allDay,
         start: normalizeInstant(e.start, allDay),
         end: normalizeInstant(e.end, allDay),
@@ -654,6 +672,7 @@ export default {
         start: e.start.toISOString(),
         end: e.end.toISOString(),
         allDay: e.allDay,
+        link: safeLink(e.url?.val ?? e.url) ?? googleDay(url, e, timezone),
       }))
       .sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
 

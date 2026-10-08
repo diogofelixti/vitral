@@ -34,8 +34,7 @@
   "countdown": {
     "none": "nenhuma data configurada",
     "days": "dias",
-    "today": "hoje",
-    "past": "dias atrás"
+    "today": "hoje"
   },
   "age": {
     "seconds": "há {n} s",

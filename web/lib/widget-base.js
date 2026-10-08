@@ -21,8 +21,31 @@ export class Widget extends HTMLElement {
     return fragment
   }
   clear() { this.replaceChildren() }
+  // a row, a pair or the whole widget that opens where its reading comes from, in a new tab
+  // so the panel keeps running in its own; an attribute rather than an <a>, so the themes'
+  // selectors and the layout stay exactly what they are
+  linkTo(el, href) {
+    // the api lets only https through; a page opened from here never runs a javascript: one
+    if (!/^https:\/\//.test(href ?? '')) return el
+    el.dataset.link = href
+    el.setAttribute('role', 'link')
+    el.tabIndex = 0
+    return el
+  }
+  unlink(el) {
+    delete el.dataset.link
+    el.removeAttribute('tabindex')
+  }
   connectedCallback() {
     this.setAttribute('role', 'group')
+    const open = event => {
+      const target = event.target.closest?.('[data-link]')
+      if (!target || !this.contains(target)) return
+      event.preventDefault()
+      window.open(target.dataset.link, '_blank', 'noopener,noreferrer')
+    }
+    this.addEventListener('click', open)
+    this.addEventListener('keydown', event => { if (event.key === 'Enter') open(event) })
     this.fitObserver = new ResizeObserver(() => {
       requestAnimationFrame(() => {
         this.fitContent?.()

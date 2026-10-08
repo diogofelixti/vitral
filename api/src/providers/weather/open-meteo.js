@@ -1,9 +1,13 @@
+import { place } from './lib/place.js'
+
 const hhmm = iso => (iso ? iso.slice(11, 16) : null)
 
 export default {
   id: 'open-meteo',
   capability: 'weather',
   ttl: 900,
+  // open-meteo is an api with no page for people; Windy shows the same place's forecast.
+  page: ({ latitude, longitude }) => place(latitude, longitude) && `https://www.windy.com/?${place(latitude, longitude)},10`,
 
   async fetch({ latitude, longitude, timezone }, { http }) {
     const url = new URL('https://api.open-meteo.com/v1/forecast')

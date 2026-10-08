@@ -1,6 +1,7 @@
 import { defaultWindow } from './ics-url.js'
 import { GoogleNotConfigured } from '../../auth/google.js'
 import { CalendarNotConfigured } from './lib/not-configured.js'
+import { safeLink } from './lib/link.js'
 
 const BASE = 'https://www.googleapis.com/calendar/v3/calendars'
 
@@ -46,6 +47,7 @@ export default {
         start: new Date(e.start.dateTime ?? e.start.date).toISOString(),
         end: new Date(e.end.dateTime ?? e.end.date).toISOString(),
         allDay: Boolean(e.start.date),
+        link: safeLink(e.htmlLink),
       }))
       .sort((a, b) => Date.parse(a.start) - Date.parse(b.start))
 

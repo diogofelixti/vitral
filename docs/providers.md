@@ -84,9 +84,12 @@ Difficulty has no source yet: the widget reads "Difficulty · pending".
 
 ## `calendar`
 
-Normal form: `{ events: [{ id, title, start, end, allDay }] }`, sorted by start, with
+Normal form: `{ events: [{ id, title, start, end, allDay, link }] }`, sorted by start, with
 recurring events already expanded and titles exactly as they arrived (the frontend
-neutralizes HTML by writing them with `textContent`).
+neutralizes HTML by writing them with `textContent`). `link` is the event's own page,
+opened when the event is clicked, or `null`; anything but `https` becomes `null`. A Google
+feed read through `ics-url` has no link per event, so it links to the event's day in Google
+Calendar.
 
 Each calendar (`work` and `personal`) has one provider and no fallback chain. The "next
 event" is derived from both.
@@ -112,7 +115,9 @@ time zone. Normal form: `{ places: [{ label, region, country, latitude, longitud
 
 1. Create `api/src/providers/<capability>/<name>.js` exporting `{ id, capability, ttl,
    fetch(params, ctx), capabilities(ctx) }`. The registry finds the file on its own; code
-   shared by providers of one capability goes in a `lib/` subfolder.
+   shared by providers of one capability goes in a `lib/` subfolder. For `bitcoin`,
+   `onchain` and `weather`, also export `page(params)`: the https page where a person can
+   see the same reading, which the panel opens when the widget is clicked.
 2. Include a real API response in the pull request, so it can be recorded as a fixture.
 3. Document it here: what it covers, what it doesn't, and its `ttl`.
 
