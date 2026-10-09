@@ -50,9 +50,9 @@ export const DEFAULT_CONFIG = Object.freeze({
   timezone: 'America/Sao_Paulo',
   location: { latitude: -23.55, longitude: -46.63, label: 'São Paulo' },
   bitcoin: { providers: ['coingecko', 'coinbase'], currencies: ['brl', 'usd'], primary: 'brl' },
-  fx: { providers: ['awesomeapi'], pairs: ['USD-BRL'] },
-  weather: { providers: ['open-meteo'] },
-  onchain: { providers: ['mempool'] },
+  fx: { providers: ['awesomeapi', 'frankfurter', 'currency-api'], pairs: ['USD-BRL'] },
+  weather: { providers: ['open-meteo', 'wttr-in'] },
+  onchain: { providers: ['mempool', 'blockstream'] },
   calendars: {
     work: { provider: 'ics-url', label: { 'pt-BR': 'Trabalho', en: 'Work' } },
     personal: { provider: 'ics-url', label: { 'pt-BR': 'Pessoal', en: 'Personal' } },

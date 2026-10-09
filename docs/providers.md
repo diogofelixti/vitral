@@ -57,6 +57,7 @@ unit of base (how many reais one dollar costs) and `change` as a percentage, or 
 |---|---|---|---|
 | `awesomeapi` | USD-BRL, EUR-BRL, GBP-BRL, ARS-BRL and BTC-BRL, with the day's change | other pairs | 60 s |
 | `frankfurter` | any pair among the European Central Bank's reference currencies | change (`change: null`); one rate per business day | 60 s |
+| `currency-api` | any pair among some 200 currencies, ARS and BTC included | change (`change: null`); one rate per day | 60 s |
 
 ## `weather`
 
